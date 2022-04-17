@@ -1,5 +1,8 @@
+import { EVENTS } from "utilities/event-listener";
+
 global.CONSTANTS = {
   SERVER: {
+    EVENTS: EVENTS,
     TYPES: {
       REST: "rest",
       SOCKET: "socket",
@@ -7,6 +10,6 @@ global.CONSTANTS = {
     FORMATS: {
       JSON: "json",
       CSV: "csv",
-    }
+    },
   }
 };

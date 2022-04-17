@@ -28,6 +28,7 @@
     "url": "https://github.com/discovery-solutions/json-server/issues"
   },
   "dependencies": {
-    "ip": "^1.1.5"
+    "ip": "^1.1.5",
+    "mongodb": "^4.5.0"
   }
 }
