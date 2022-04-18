@@ -11,8 +11,8 @@ The generated API can handle simple CRUD of entities to authentication, and much
 | Parameter Key  | Description             | Required | Default Value |
 | :------------- | :---------------------- | :------- | :------------ |
 | [name](#name)  | The server project name | true     |  |
-| [config](#config) | Setup of the servers    | true     |  |
-| [database](#database) | Database setup          | false    | native |
+| [config](#config) | Setup of the servers | true     |  |
+| [database](#database) | Database setup   | false    | native |
 | [entities](#entities) | Entities for CRUD features | true  |  |
 
 ### name
@@ -33,9 +33,9 @@ This could a simple object for one server, or an array of objects for multiple s
 | :------------- | :------------- | :-------------- | : ------ |
 | ```port``` | number of the port the server should run | ```number``` | ```true``` |
 | ```database``` | the database key the server should use | ```string``` | ```true``` |
-| ```format``` | format of the responses | ```json```, ```csv``` | |
-| ```type``` | type of the server | ```rest```, ```socket``` | |
-| ```request``` | settings for requests | ```object``` | |
+| ```format``` | format of the responses | ```json```, ```csv``` |  |
+| ```type``` | type of the server | ```rest```, ```socket``` |  |
+| ```request``` | settings for requests | ```object``` |  |
 
 #### **Complete example:**
 
