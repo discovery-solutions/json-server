@@ -30,7 +30,7 @@ const server = new Server({
 This could a simple object for one server, or an array of objects for multiple servers configuration.
 
 | Key            | Description    | Type or Options | Required |
-| :------------- | :------------- | :-------------- | : ------ |
+| :------------- | :------------- | :-------------- | :------- |
 | ```port``` | number of the port the server should run | ```number``` | ```true``` |
 | ```database``` | the database key the server should use | ```string``` | ```true``` |
 | ```format``` | format of the responses | ```json```, ```csv``` |  |
