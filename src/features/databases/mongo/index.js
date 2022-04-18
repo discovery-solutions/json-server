@@ -27,7 +27,6 @@ export default class MongoDB extends CRUD {
   }
 
   async setEntity(entity) {
-    console.log(entity);
     try {
       await this.db.createCollection(entity);
     } catch (e) {

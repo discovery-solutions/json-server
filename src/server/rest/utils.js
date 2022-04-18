@@ -18,3 +18,21 @@ export function toCSV(data) {
 
   return [ header, content ].join("\n")
 }
+
+export function getBody(request) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+
+    request.on("data", chunk => {
+      data += chunk;
+    });
+
+    request.on("end", () => {
+      return resolve( JSON.parse(data) );
+    });
+
+    request.on("error", e => {
+      return reject( e );
+    });
+  });
+}

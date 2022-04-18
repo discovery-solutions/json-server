@@ -1,7 +1,7 @@
 export const METHODS = {
-  CREATE: "POST",
+  INSERT: "POST",
   UPDATE: "PATCH",
   DELETE: "DELETE",
   LIST: "GET",
-  GET: "GET",  
+  GET: "GET",
 }

@@ -29,13 +29,20 @@ const server = new Server({
     alias: "User",          // * required
     identifyer: "myid",
     fields: {               // * required
-      name: "string",
-      email: "string",
+      name: {
+        type: "string",
+        required: true
+      },
+      email: {
+        type: "string",
+        required: true
+      },
       phone: "string",
       password: "string",
       birthdate: "date",
       avatar: "image",
       type: {
+        type: "id",
         relation: "user-types",
       }
     },

@@ -27,9 +27,8 @@ export default class CRUD {
     try {
       const res = await this.find({ _id: ObjectId(id) });
 
-      return res[0];
+      return res;
     } catch (e) {
-      // console.log(e);
       return false;
     }
   }
@@ -45,7 +44,7 @@ export default class CRUD {
         ...data,
       });
 
-      return res.ops[0];
+      return await this.findByID(res.insertedId);
     } catch (e) {
       console.log(e);
       return false;
@@ -66,7 +65,6 @@ export default class CRUD {
 
       return res.ops;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }

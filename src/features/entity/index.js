@@ -1,5 +1,6 @@
 import * as Utils from "utilities/utils";
 import Databases from "features/databases";
+import { validateByEntityModel } from "./utils";
 
 class EntityHandler {
   constructor(request, database) {
@@ -59,8 +60,12 @@ class EntityHandler {
   }
 
   action = async () => {
+    const isInsert = this.validateMethod("INSERT") && this.url.splited.length === 1;
     const isList = this.validateMethod("LIST") && this.url.splited.length === 1;
     const isGet = this.validateMethod("GET") && this.url.splited.length === 2;
+
+    if (isInsert)
+      return await this.insert();
 
     if (isList)
       return await this.list();
@@ -100,13 +105,36 @@ class EntityHandler {
 
       const entity = await this.database.findByID(id);
 
-      console.log(entity);
-
       if (entity === false)
         return this.next(204);
 
       this.response = {
         [this.entity.name]: entity
+      }
+
+      return this.next(200);
+    } catch (e) {
+      // console.log(e);
+      return this.next(500);
+    }
+  }
+
+  insert = async () => {
+    try {
+      const data = this.request.body;
+
+      const isValid = validateByEntityModel(data, this.entity);
+
+      if (isValid === false)
+        return this.next(400);
+
+      const entity = await this.database.insert(data);
+
+      if (entity === false)
+        return this.next(500);
+
+      this.response = {
+        [this.entity.name]: entity,
       }
 
       return this.next(200);

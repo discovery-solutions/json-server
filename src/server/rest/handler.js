@@ -1,6 +1,6 @@
 import Entity from "features/entity";
 import Error from "utilities/error";
-import { toJSON, toCSV } from "./utils";
+import { toJSON, toCSV, getBody } from "./utils";
 
 export default class Handler {
   constructor({ format, port, type, database }) {
@@ -13,6 +13,12 @@ export default class Handler {
   }
 
   handler = async (req, res) => {
+    try {
+      req.body = await getBody(req);
+    } catch (e) {
+        return this.parse(422);
+    }
+
     this.res = res;
     this.req = req;
 
@@ -24,15 +30,15 @@ export default class Handler {
     const entity = await Entity.handle(req, this.database);
 
     if (entity.code === 200)
-      return this.parse(entity.response, entity.code);
+      return this.parse(entity.code, entity.response);
 
     if (entity.code !== 404)
-      return this.parse(Error.get(entity.code), entity.code);
+      return this.parse(entity.code, Error.get(entity.code));
 
     return this.handleNotFound();
   }
 
-  parse(response, code) {
+  parse(code, response = {}) {
     this.code = code;
     this.response = {
       ...Error.get(code),
@@ -60,9 +66,7 @@ export default class Handler {
   }
 
   handleNotFound() {
-    const notFoundResponse = Error.get(404);
-
-    return this.parse(notFoundResponse, 404);
+    return this.parse(404, Error.get(404));
   }
 
   send() {
