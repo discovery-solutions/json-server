@@ -1,9 +1,5 @@
 
-global["json-server"]["event-listener"] = {
-  listeners: {}
-};
-
-const listeners = global["json-server"]["event-listener"].listeners;
+const listeners = {};
 
 export default class EventListener {
   constructor(event) {

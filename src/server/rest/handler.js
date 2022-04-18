@@ -1,17 +1,18 @@
-import EntityHandler from "features/entity";
+import Entity from "features/entity";
 import Error from "utilities/error";
 import { toJSON, toCSV } from "./utils";
 
 export default class Handler {
-  constructor({ format, port, type }) {
+  constructor({ format, port, type, database }) {
     this.format = format;
     this.type = type;
     this.port = port;
+    this.database = database;
 
     return this.handler;
   }
 
-  handler = (req, res) => {
+  handler = async (req, res) => {
     this.res = res;
     this.req = req;
 
@@ -20,10 +21,13 @@ export default class Handler {
     if ( isFileRequest )
       return this.handleNotFound();
 
-    const entity = new EntityHandler(req);
+    const entity = await Entity.handle(req, this.database);
 
     if (entity.code === 200)
       return this.parse(entity.response, entity.code);
+
+    if (entity.code !== 404)
+      return this.parse(Error.get(entity.code), entity.code);
 
     return this.handleNotFound();
   }
@@ -56,11 +60,7 @@ export default class Handler {
   }
 
   handleNotFound() {
-    const notFoundResponse = {
-      status: false,
-      code: 404,
-      message: "Not Found"
-    };
+    const notFoundResponse = Error.get(404);
 
     return this.parse(notFoundResponse, 404);
   }

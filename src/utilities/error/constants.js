@@ -1,5 +1,6 @@
 export const CODES = {
     200: { code: 200, message: "OK" },
+    204: { code: 204, message: "No Content" },
     400: { code: 400, message: "Bad Request" },
     401: { code: 401, message: "Unauthorized" },
     403: { code: 403, message: "Requested Resource Is Forbidden" },

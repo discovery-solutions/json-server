@@ -1,20 +1,34 @@
 import Server from "../src/";
 
-const servers = Server.run({
+// TODO: Socket server
+
+// TODO: vinculate server to specific database using key
+
+const server = new Server({
   name: "my-server",
   config: [{
-    port: 3500,
-    type: "rest",
-    format: "json", // csv
+    port: 3501,             // * required
+    type: "rest",           // * required
+    format: "json", // csv  // * required
+    database: "my-db-1",
+    request: {
+      limit: 10,
+    },
   }, {
-    port: 3501,
+    port: 3500,
     type: "socket",
   }],
+  database: {
+    type: "mongo",          // * required
+    key: "my-db-1",         // * required
+    name: "json-test",      // * required
+    uri: "mongodb+srv://default-user:user-password@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority", // * required
+  },
   entities: [{
-    name: "user",
-    alias: "User",
+    name: "user",           // * required
+    alias: "User",          // * required
     identifyer: "myid",
-    fields: {
+    fields: {               // * required
       name: "string",
       email: "string",
       phone: "string",
@@ -27,8 +41,8 @@ const servers = Server.run({
     },
     auth: {
       type: "jwt", // oauth | token
-      fields: ["login", "password"],
-      permission: {
+      fields: ["login", "password"],    // * required
+      permission: { // default "*"
         "*": {
           create: false,
           update: false,
@@ -54,4 +68,10 @@ const servers = Server.run({
   }]
 });
 
-// console.log(servers);
+// server.setup({
+//   request: {
+//     limit: 5
+//   }
+// })
+
+server.run();
