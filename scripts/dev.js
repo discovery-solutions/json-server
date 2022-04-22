@@ -10,7 +10,7 @@ const server = new Server({
     port: 3501,             // * required
     type: "rest",           // * required
     format: "json", // csv  // * required
-    database: "my-db-1",
+    // database: "my-db-1",
     request: {
       limit: 10,
     },
@@ -18,12 +18,12 @@ const server = new Server({
     port: 3500,
     type: "socket",
   }],
-  database: {
-    type: "mongo",          // * required
-    key: "my-db-1",         // * required
-    name: "json-test",      // * required
-    uri: "mongodb+srv://default-user:user-password@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority", // * required
-  },
+  // database: {
+  //   type: "mongo",          // * required
+  //   key: "my-db-1",         // * required
+  //   name: "json-test",      // * required
+  //   uri: "mongodb+srv://default-user:user-password@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority", // * required
+  // },
   entities: [{
     name: "user",           // * required
     alias: "User",          // * required

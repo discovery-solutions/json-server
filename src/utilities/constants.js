@@ -14,6 +14,9 @@ global.CONSTANTS = {
       CSV: "csv",
     },
     SETTINGS: {
+      DATABASE: {
+        DEFAULT: "custom-db",
+      },
       REQUEST: {
         LIMIT: 10,
       }

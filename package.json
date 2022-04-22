@@ -12,6 +12,9 @@
     "start": "node dist/index.js",
     "dev": "NODE_PATH=./src nodemon --exec babel-node --presets=@babel/preset-env ./scripts/dev.js"
   },
+  "nodemonConfig": {
+    "ignore": ["*.json"]
+  },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
@@ -20,15 +23,15 @@
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2"
   },
+  "dependencies": {
+    "ip": "^1.1.5",
+    "mongodb": "^4.5.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/discovery-solutions/json-server.git"
   },
   "bugs": {
     "url": "https://github.com/discovery-solutions/json-server/issues"
-  },
-  "dependencies": {
-    "ip": "^1.1.5",
-    "mongodb": "^4.5.0"
   }
 }

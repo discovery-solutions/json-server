@@ -12,9 +12,12 @@ export default class Server {
     global["json-server"].json = json;
   }
 
-  setup({ request }) {
+  setup({ request, database }) {
     if (request.limit)
       CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT = request.limit;
+
+    if (database?.default)
+      CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT = database.default;
   }
 
   async run() {
