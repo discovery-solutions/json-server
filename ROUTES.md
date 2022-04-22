@@ -15,10 +15,10 @@ GET /{entity}/{id}
 3. Update data of a single record by id
 
 ```
-PUT /{entity}/{id}
+PATCH /{entity}/{id}
 ```
 
-4. Update data of a multiple records
+~~4. Update data of a multiple records~~ **(TODO)**
 
 ```
 PUT /{entity}
@@ -36,7 +36,7 @@ POST /{entity}
 DELETE /{entity}/{id}
 ```
 
-7. Delete multiple records
+~~7. Delete multiple records~~ **(TODO)**
 
 ```
 DELETE /{entity}
@@ -51,5 +51,5 @@ GET /{entity}/latest
 9. List oldest records
 
 ```
-GET /{entity}/latest
+GET /{entity}/oldest
 ```

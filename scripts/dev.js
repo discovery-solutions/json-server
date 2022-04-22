@@ -75,10 +75,14 @@ const server = new Server({
   }]
 });
 
-// server.setup({
-//   request: {
-//     limit: 5
-//   }
-// })
+server.setup({
+  request: {
+    limit: 5
+  }
+});
+
+// server.routes.get("/banana", (req, res) => {
+//   res.code(200).json({ status: true });
+// });
 
 server.run();

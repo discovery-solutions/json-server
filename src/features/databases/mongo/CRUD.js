@@ -71,7 +71,7 @@ export default class CRUD {
 
   // Update ==================================================================
   async updateByID(id, data) {
-    return await this.update({ _id: ObjectId(value) }, data);
+    return await this.update({ _id: ObjectId(id) }, data);
   }
 
   async update(query, data) {
@@ -98,7 +98,7 @@ export default class CRUD {
   }
 
   async deleteByID(id) {
-      return await this.delete({ _id: ObjectId(value) });
+      return await this.delete({ _id: ObjectId(id) });
   }
 
   async deleteMany(query) {

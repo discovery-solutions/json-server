@@ -40,4 +40,8 @@ export default class MongoDB extends CRUD {
   async count(query = {}) {
     return this.collection.count(query);
   }
+
+  async validateID(id) {
+    return id.match(/^[0-9a-fA-F]{24}$/);
+  }
 }

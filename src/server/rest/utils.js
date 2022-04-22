@@ -20,8 +20,13 @@ export function toCSV(data) {
 }
 
 export function getBody(request) {
+  const methodsUsingBody = [CONSTANTS.SERVER.METHODS.INSERT, CONSTANTS.SERVER.METHODS.UPDATE];
+
   return new Promise((resolve, reject) => {
     let data = "";
+
+    if ( methodsUsingBody.includes(request.method) === false )
+      return resolve(null);
 
     request.on("data", chunk => {
       data += chunk;
@@ -32,7 +37,7 @@ export function getBody(request) {
     });
 
     request.on("error", e => {
-      return reject( e );
+      return reject(e);
     });
   });
 }

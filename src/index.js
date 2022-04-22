@@ -14,7 +14,7 @@ export default class Server {
 
   setup({ request }) {
     if (request.limit)
-      SERVER.SETTINGS.REQUEST.LIMIT = request.limit;
+      CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT = request.limit;
   }
 
   async run() {

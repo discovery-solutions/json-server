@@ -16,9 +16,9 @@ export default class Handler {
     try {
       req.body = await getBody(req);
     } catch (e) {
-        return this.parse(422);
+      return this.parse(422);
     }
-
+    
     this.res = res;
     this.req = req;
 
