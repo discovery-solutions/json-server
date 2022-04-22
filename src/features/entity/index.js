@@ -132,8 +132,6 @@ class EntityHandler {
       // Searching for records
       const entity = await this.database.findByID(entityID);
 
-      console.log(entity);
-
       if (entity === false)
         return this.next(204);
 
