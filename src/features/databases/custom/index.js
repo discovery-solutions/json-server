@@ -9,7 +9,7 @@ export default class CustomDB extends CRUD {
 
     if (!this.db[name])
       this.db[name] = {};
-      
+
     this.name = name;
     this.key = key;
 
@@ -24,7 +24,7 @@ export default class CustomDB extends CRUD {
     this.entity = entity;
 
     if (typeof this.db[this.name][this.entity] === "undefined")
-      this.set([]);
+      this._set([]);
   }
 
   count = async (query = {}) => {

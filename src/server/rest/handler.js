@@ -1,33 +1,60 @@
+import EventListener, { Events } from "utilities/event-listener";
 import Entity from "features/entity";
 import Error from "utilities/error";
 import { toJSON, toCSV, getBody } from "./utils";
 
 export default class Handler {
   constructor({ format, port, type, database }) {
+    this.database = database || CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
     this.format = format;
     this.type = type;
     this.port = port;
-    this.database = database;
 
     return this.handler;
   }
 
   handler = async (req, res) => {
+    // Extraction body
     try {
       req.body = await getBody(req);
     } catch (e) {
       return this.parse(422);
     }
-    
+
     this.res = res;
     this.req = req;
 
+    this.req.server = {
+      database: this.database,
+      format: this.format,
+      type: this.type,
+      port: this.port,
+    }
+
+    // Handle file requests
     const isFileRequest = req.url.split(".").length > 1;
 
-    if ( isFileRequest )
-      return this.handleNotFound();
+    if ( isFileRequest ) return this.handleNotFound();
 
-    const entity = await Entity.handle(req, this.database);
+    // Calling events for before actions
+    const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
+    const listenerStatus = await eventListener.run(this.req, this.res);
+
+    const isChanged = (
+      listenerStatus === false ||
+      this.res.statusCode !== 200 ||
+      typeof this.res.payload === "object"
+    );
+
+    if (isChanged) {
+      return this.parse(this.res.statusCode, {
+        ...Error.get(this.res.statusCode),
+        ...this.res.payload,
+      });
+    }
+
+    // Handling request with entities
+    const entity = await Entity.handle(this.req, this.database);
 
     if (entity.code === 200)
       return this.parse(entity.code, entity.response);
@@ -35,6 +62,7 @@ export default class Handler {
     if (entity.code !== 404)
       return this.parse(entity.code, Error.get(entity.code));
 
+    // Handling not found
     return this.handleNotFound();
   }
 

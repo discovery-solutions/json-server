@@ -26,7 +26,7 @@ export function getBody(request) {
     let data = "";
 
     if ( methodsUsingBody.includes(request.method) === false )
-      return resolve(null);
+      return resolve({});
 
     request.on("data", chunk => {
       data += chunk;

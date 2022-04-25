@@ -1,5 +1,6 @@
 import * as Utils from "utilities/utils";
 import Rest from "./rest/";
+import "features/auth";
 
 export default class ServerTypes {
   static async setup({ config }) {

@@ -1,20 +1,8 @@
-export const EVENTS = {
-  ENTITY: {
+export const Events = {
+  REQUEST: {
     BEFORE: {
-      ACTION: "ENTITY-BEFORE-ACTION",
-    },
-    AFTER: {
-      ACTION: "ENTITY-AFTER-ACTION",
+      RESPONSE: "REQUEST.BEFORE.RESPONSE",
+      PROCESS: "REQUEST.BEFORE.PROCESS",
     }
   },
-  RESPONSE: {
-    BEFORE: {
-      SEND: "RESPONSE-BEFORE-SEND",
-      PARSE: "RESPONSE-BEFORE-PARSE",
-    },
-    AFTER: {
-      SEND: "RESPONSE-AFTER-SEND",
-      PARSE: "RESPONSE-AFTER-PARSE",
-    }
-  }
 }

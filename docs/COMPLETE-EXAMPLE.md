@@ -61,14 +61,14 @@ const server = new Server({
       fields: ["login", "password"],    // * required
       permission: { // default "*"
         "*": {
-          create: false,
+          insert: false,
           update: false,
           delete: false,
           list: true,
           get: true,
         },
         "user-types": {
-          create: true,
+          insert: true,
           update: true,
           delete: false,
           list: true,

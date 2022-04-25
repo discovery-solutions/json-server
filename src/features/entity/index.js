@@ -1,6 +1,7 @@
 import * as Utils from "utilities/utils";
 import Databases from "features/databases";
 import { validateByEntityModel, getID } from "./utils";
+import URL from "./URL";
 
 class EntityHandler {
   constructor(request, database) {
@@ -8,16 +9,11 @@ class EntityHandler {
     this.response = null;
     this.entity = {};
     this.database = Databases.get(database);
-
-    this.url = {
-      value: request.url,
-      splited: request.url.split("/").filter(item => item.length > 0),
-    }
   }
 
   async run() {
     const { method, url } = this.request;
-    const isValidURLCode = await this.validateURL(url);
+    const isValidURLCode = await this.validateURL();
     const isValidMethod = Object.values(CONSTANTS.SERVER.METHODS).includes(method);
 
     if ( isValidMethod === false )
@@ -34,10 +30,10 @@ class EntityHandler {
     code,
   })
 
-  validateURL = async (url) => {
+  validateURL = async () => {
     try {
       const json = Utils.getJSON();
-      const [ urlEntity ] = this.url.splited;
+      const [ urlEntity ] = this.request.url.splitted;
 
       for (const entity of json.entities) {
         const hasEntityName = (urlEntity === entity.name);
@@ -56,42 +52,27 @@ class EntityHandler {
     }
   }
 
-  validateMethod = (key) => {
-    // Checks if the request method is the same as the testing value
-    return this.request.method === CONSTANTS.SERVER.METHODS[key];
-  }
-
   action = async () => {
-    // Creating validations for allowed requests
-    const isDelete = this.validateMethod("DELETE") && this.url.splited.length === 2;
-    const isUpdate = this.validateMethod("UPDATE") && this.url.splited.length === 2;
-    const isInsert = this.validateMethod("INSERT") && this.url.splited.length === 1;
-    const isList = this.validateMethod("LIST") && this.url.splited.length === 1;
-    const isGet = this.validateMethod("GET") && this.url.splited.length === 2;
-
-    const isOldest = isGet && this.url.value.search("oldest") > -1;
-    const isLatest = isGet && this.url.value.search("latest") > -1;
-
     // Apllying validations
-    if (isOldest)
+    if ( URL.oldest(this.request) )
       return await this.oldest();
 
-    if (isLatest)
+    if ( URL.latest(this.request) )
       return await this.latest();
 
-    if (isUpdate)
+    if ( URL.update(this.request) )
       return await this.update();
 
-    if (isDelete)
+    if ( URL.delete(this.request) )
       return await this.delete();
 
-    if (isInsert)
+    if ( URL.insert(this.request) )
       return await this.insert();
 
-    if (isList)
+    if ( URL.list(this.request) )
       return await this.list();
 
-    if (isGet)
+    if ( URL.get(this.request) )
       return await this.get();
 
     // If the request doesn't match any of the criteria
@@ -123,7 +104,7 @@ class EntityHandler {
   get = async () => {
     try {
       // Extracting data from request
-      const entityID = this.url.splited[1] + "";
+      const entityID = this.request.url.splitted[1] + "";
 
       // Validating ID
       if ( this.database.validateID(entityID) === false )

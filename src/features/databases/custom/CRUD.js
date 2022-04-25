@@ -2,26 +2,26 @@ import { ObjectId } from "mongodb";
 import fs from "fs";
 
 export default class CRUD {
-  getAll = () => {
+  _getAll = () => {
     this.db = JSON.parse( fs.readFileSync("db.json", "utf8") );
 
     return this.db[this.name][this.entity];
   }
 
-  add = (record) => {
+  _add = (record) => {
     this.db[this.name][this.entity].push(record);
 
     fs.writeFileSync("db.json", JSON.stringify(this.db));
   }
 
-  set = (records) => {
+  _set = (records) => {
     this.db[this.name][this.entity] = records;
 
     fs.writeFileSync("db.json", JSON.stringify(this.db));
   }
 
-  find = (query = {}) => {
-    const data = this.getAll();
+  _find = (query = {}) => {
+    const data = this._getAll();
     const keys = Object.keys(query);
     const records = [];
 
@@ -47,7 +47,7 @@ export default class CRUD {
     const keys = Object.keys(query);
     let i = 0;
 
-    for (const row of this.getAll()) {
+    for (const row of this._getAll()) {
       const matchs = [];
 
       keys.forEach(key => {
@@ -67,7 +67,7 @@ export default class CRUD {
   // List e Gets =============================================================
   list = async (query = {}, skip = 0) => {
     try {
-      const records = this.find(query);
+      const records = this._find(query);
       const limit = CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT + skip;
 
       return records.slice(skip, limit);
@@ -77,13 +77,13 @@ export default class CRUD {
     }
   }
 
-  findAll = async (query) => {
-    return this.find(query);
+  find = async (query) => {
+    return this._find(query);
   }
 
   findByID = async (id) => {
     try {
-      const [ record ] = await this.find({ id });
+      const [ record ] = await this._find({ id });
 
       if (record)
         return record;
@@ -105,7 +105,7 @@ export default class CRUD {
         ...data,
       };
 
-      this.add(record);
+      this._add(record);
 
       return record;
     } catch (e) {
@@ -127,7 +127,7 @@ export default class CRUD {
           ...item,
         };
 
-        this.add(record);
+        this._add(record);
         records.push(record);
       }
 
@@ -145,14 +145,14 @@ export default class CRUD {
       if (index < 0)
         return false;
 
-      const records = this.getAll();
+      const records = this._getAll();
 
       records[index] = {
         ...records[index],
         ...data
       }
 
-      this.set(records);
+      this._set(records);
 
       return { modifiedCount: 1 }
     } catch (e) {
@@ -178,10 +178,10 @@ export default class CRUD {
 
   // Delete ==================================================================
   delete = async (query) => {
-    const queryResults = this.find(query).map(item => JSON.stringify(item));
+    const queryResults = this._find(query).map(item => JSON.stringify(item));
 
-    this.set(
-      this.getAll().filter(record => !queryResults.includes(JSON.stringify(record)))
+    this._set(
+      this._getAll().filter(record => !queryResults.includes(JSON.stringify(record)))
     );
 
     return {
@@ -199,14 +199,14 @@ export default class CRUD {
 
   // Featured ================================================================
   getLatest = async (query, skip = 0) => {
-    const records = this.find(query);
+    const records = this._find(query);
     const limit = CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT + skip;
 
     return records.slice(skip, limit);
   }
 
   getOldest = async (query, skip = 0) => {
-    const records = this.find(query).reverse();
+    const records = this._find(query).reverse();
     const limit = CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT + skip;
 
     return records.slice(skip, limit);

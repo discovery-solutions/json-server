@@ -1,9 +1,11 @@
-
 const listeners = {};
 
 export default class EventListener {
   constructor(event) {
     this.event = event;
+
+    if ( Array.isArray(listeners[event]) === false )
+      listeners[event] = [];
 
     return this;
   }
@@ -16,8 +18,29 @@ export default class EventListener {
     return EventListener.removeListener(this.event, index);
   }
 
+  run = async (...args) => {
+    const events = listeners[this.event];
+
+    if ( Array.isArray(events) === false )
+      return false;
+
+    for (const event of events) {
+      try {
+        const status = await Promise.resolve( event(...args) );
+
+        if (status === false)
+          return false;
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   static setListener(event, callback) {
-    const index = listeners.push(callback);
+    const index = listeners[event].push(callback);
 
     return index - 1;
   }
@@ -32,3 +55,5 @@ export default class EventListener {
     }
   }
 }
+
+export { Events } from "./events";

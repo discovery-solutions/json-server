@@ -81,8 +81,8 @@ const server = new Server({
 Things to do:
 
 * [x] CRUD routes
-  * [x] Create/Insert
-  * [x] Read/List
+  * [x] Insert
+  * [x] List/Get
   * [x] Update
   * [x] Delete
 * [ ] Databases
@@ -92,7 +92,9 @@ Things to do:
   * [ ] MySQL
 * [ ] Full search for all entities
 * [ ] Interceptor to add custom requests
+* [ ] Add logger for request and API transactions
 * [ ] Bulk actions
   * [x] Bulk insert
   * [ ] Bulk update
   * [ ] Bulk delete
+* [ ] Translate docs to portuguese

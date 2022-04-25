@@ -37,8 +37,11 @@ const server = new Server({
         type: "string",
         required: true
       },
+      password: {
+        type: "string",
+        required: true
+      },
       phone: "string",
-      password: "string",
       birthdate: "date",
       avatar: "image",
       type: {
@@ -48,17 +51,18 @@ const server = new Server({
     },
     auth: {
       type: "jwt", // oauth | token
-      fields: ["login", "password"],    // * required
+      fields: ["email", "password"],    // * required
+      secret: "MY-SECRET-FOR-AUTH",     // required for JWT
       permission: { // default "*"
         "*": {
-          create: false,
+          insert: false,
           update: false,
           delete: false,
           list: false,
           get: false,
         },
         "user-types": {
-          create: true,
+          insert: true,
           update: true,
           delete: false,
           list: true,
