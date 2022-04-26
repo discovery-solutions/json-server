@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import ip from "ip";
 
 export function getJSON() {
@@ -27,8 +26,4 @@ export function getIP() {
 
 export function useID(data = {}) {
   return data.id || data._id;
-}
-
-export function generateToken() {
-  return crypto.randomBytes(64).toString("hex");
 }

@@ -1,4 +1,5 @@
 import Databases from "features/databases";
+import crypto from "crypto";
 
 let DEFAULT_ENTITY;
 
@@ -17,15 +18,11 @@ export default class AuthTokenHandler {
       if (records.length === 0)
         return false;
 
-      // console.log({records});
-
       const [ record ] = records;
 
       await this.database.setEntity(record.entity.type);
 
-      const entity = this.database.findByID(record.entity.id);
-
-      // console.log({entity});
+      const entity = await this.database.findByID(record.entity.id);
 
       this.database.setEntity(DEFAULT_ENTITY);
       return entity;
@@ -41,7 +38,7 @@ export default class AuthTokenHandler {
     try {
       console.log(id, type, token);
 
-      const status = await this.database.add({
+      const status = await this.database.insert({
         token: token,
         entity: { type, id }
       });
@@ -55,5 +52,9 @@ export default class AuthTokenHandler {
 
       return false;
     }
+  }
+
+  static generate() {
+    return crypto.randomBytes(64).toString("hex");
   }
 }

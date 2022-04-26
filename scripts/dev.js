@@ -58,7 +58,7 @@ const server = new Server({
           insert: false,
           update: false,
           delete: false,
-          list: false,
+          list: true,
           get: false,
         },
         "user-types": {

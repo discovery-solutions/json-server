@@ -1,4 +1,5 @@
 import EventListener, { Events } from "utilities/event-listener";
+import Requests from "features/requests";
 import Entity from "features/entity";
 import Error from "utilities/error";
 import { toJSON, toCSV, getBody } from "./utils";
@@ -37,20 +38,26 @@ export default class Handler {
     if ( isFileRequest ) return this.handleNotFound();
 
     // Calling events for before actions
-    const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
-    const listenerStatus = await eventListener.run(this.req, this.res);
+    const middlewares = [
+      new EventListener(Events.REQUEST.BEFORE.PROCESS),
+      new Requests(),
+    ];
 
-    const isChanged = (
-      listenerStatus === false ||
-      this.res.statusCode !== 200 ||
-      typeof this.res.payload === "object"
-    );
+    for (const middleware of middlewares) {
+      const status = await middleware.run(this.req, this.res);
 
-    if (isChanged) {
-      return this.parse(this.res.statusCode, {
-        ...Error.get(this.res.statusCode),
-        ...this.res.payload,
-      });
+      const isChanged = (
+        status !== false ||
+        this.res.statusCode !== 200 ||
+        typeof this.res.payload === "object"
+      );
+
+      if (isChanged) {
+        return this.parse(this.res.statusCode, {
+          ...Error.get(this.res.statusCode),
+          ...this.res.payload,
+        });
+      }
     }
 
     // Handling request with entities

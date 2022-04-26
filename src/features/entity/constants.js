@@ -4,4 +4,7 @@ export const METHODS = {
   DELETE: "DELETE",
   LIST: "GET",
   GET: "GET",
+
+  POST: "POST",
+  PATCH: "PATCH",
 }

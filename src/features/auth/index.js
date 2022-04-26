@@ -2,6 +2,7 @@ import EventListener, { Events } from "utilities/event-listener";
 import AuthTokenHandler from "./token";
 import { getJSON } from "utilities/utils";
 import URL from "features/entity/url";
+import "./routes/";
 
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
 
@@ -39,14 +40,20 @@ eventListener.set(async (req, res) => {
   }
 
   for (const key of Object.keys(URL)) {
-    const permission = permissionByURL[key] || CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST;
-    const hasPermission = req.entity.auth.permission[permission];
-    const needsAuthentication = URL[key](req) === true;
-    const isAuthenticated = !!req.auth;
+    if ( URL[key](req) ) {
+      const permissions = req.entity?.auth?.permission;
 
-    if (needsAuthentication && hasPermission && isAuthenticated)
-      return true;
+      const permission = permissionByURL[key] || CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST;
+      const authPermission = permissions[req.entity.name] || permissions["*"];
+
+      const isAuthenticated = !!req.auth;
+      const hasPermission = !!authPermission[permission];
+
+      if (hasPermission && isAuthenticated)
+        return false;
+    }
   }
 
   res.statusCode = 401;
+  return true;
 });

@@ -1,3 +1,4 @@
+import LocalStorage from "./LocalStorage";
 import CRUD from "./CRUD";
 import fs from "fs";
 
@@ -5,15 +6,15 @@ export default class CustomDB extends CRUD {
   constructor({ name, key }) {
     super();
 
-    this.db = JSON.parse( fs.readFileSync("db.json", "utf8") );
+    this.storage = new LocalStorage(name);
 
-    if (!this.db[name])
-      this.db[name] = {};
+    if (!this.storage.db[name])
+      this.storage.db[name] = {};
 
     this.name = name;
     this.key = key;
 
-    fs.writeFileSync("db.json", JSON.stringify(this.db));
+    this.storage.setAll({ ...this.storage.db });
   }
 
   connect = async () => {
@@ -23,12 +24,14 @@ export default class CustomDB extends CRUD {
   setEntity = async (entity) => {
     this.entity = entity;
 
-    if (typeof this.db[this.name][this.entity] === "undefined")
+    await this.storage.setEntity(entity);
+
+    if (typeof this.storage.db[this.name][this.entity] === "undefined")
       this._set([]);
   }
 
   count = async (query = {}) => {
-    return this.db[this.name][this.entity]?.length || 0;
+    return this.storage.db[this.name][this.entity]?.length || 0;
   }
 
   validateID = async (id) => {
