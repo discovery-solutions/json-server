@@ -29,21 +29,23 @@ eventListener.set(async (req, res) => {
 
 // Access controller for routes
 eventListener.set(async (req, res) => {
+  const { PERMISSIONS, REQUESTS } = CONSTANTS.SERVER.AUTH;
+
   const permissionByURL = {
-    oldest: CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST,
-    latest: CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST,
-    update: CONSTANTS.SERVER.AUTH.PERMISSIONS.UPDATE,
-    delete: CONSTANTS.SERVER.AUTH.PERMISSIONS.DELETE,
-    insert: CONSTANTS.SERVER.AUTH.PERMISSIONS.INSERT,
-    list: CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST,
-    get: CONSTANTS.SERVER.AUTH.PERMISSIONS.GET,
+    oldest: PERMISSIONS.LIST,
+    latest: PERMISSIONS.LIST,
+    update: PERMISSIONS.UPDATE,
+    delete: PERMISSIONS.DELETE,
+    insert: PERMISSIONS.INSERT,
+    list: PERMISSIONS.LIST,
+    get: PERMISSIONS.GET,
   }
 
   for (const key of Object.keys(URL)) {
     if ( URL[key](req) ) {
       const permissions = req.entity?.auth?.permission;
 
-      const permission = permissionByURL[key] || CONSTANTS.SERVER.AUTH.PERMISSIONS.LIST;
+      const permission = permissionByURL[key] || PERMISSIONS.LIST;
       const authPermission = permissions[req.entity.name] || permissions["*"];
 
       const isAuthenticated = !!req.auth;
@@ -53,6 +55,11 @@ eventListener.set(async (req, res) => {
         return false;
     }
   }
+
+  const whitelist = [REQUESTS.LOGIN.PATH, REQUESTS.REFRESH.PATH];
+
+  if (whitelist.includes(req.url.value))
+    return false;
 
   res.statusCode = 401;
   return true;

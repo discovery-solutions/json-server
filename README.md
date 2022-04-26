@@ -90,8 +90,13 @@ Things to do:
   * [ ] PostgreSQL
   * [x] MongoDB
   * [ ] MySQL
+* [x] Authentication
+  * [x] JWT
+  * [x] Simple Token
+  * [x] Authentication routes
+  * [x] Authorization handler
 * [ ] Full search for all entities
-* [ ] Interceptor to add custom requests
+* [x] Interceptor to add custom requests
 * [ ] Add logger for request and API transactions
 * [ ] Bulk actions
   * [x] Bulk insert

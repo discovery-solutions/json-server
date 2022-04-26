@@ -36,15 +36,10 @@ export default class AuthTokenHandler {
 
   async register(id, type, token) {
     try {
-      console.log(id, type, token);
-
       const status = await this.database.insert({
         token: token,
         entity: { type, id }
       });
-
-      console.log("status");
-      console.log(status);
 
       return true;
     } catch (e) {
@@ -54,7 +49,7 @@ export default class AuthTokenHandler {
     }
   }
 
-  static generate() {
+  generate() {
     return crypto.randomBytes(64).toString("hex");
   }
 }

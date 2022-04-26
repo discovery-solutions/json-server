@@ -50,7 +50,7 @@ const server = new Server({
       }
     },
     auth: {
-      type: "jwt", // oauth | token
+      type: "jwt", // jwt | token
       fields: ["email", "password"],    // * required
       secret: "MY-SECRET-FOR-AUTH",     // required for JWT
       permission: { // default "*"

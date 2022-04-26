@@ -40,15 +40,16 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
       return (res.statusCode = 401);
 
     // Generating token
-    const access = AuthTokenHandler.generate();
+    const authTokenHandler = new AuthTokenHandler(req);
+
     const id = useID(entityData);
+    const access = authTokenHandler.generate();
 
     // Recording access token on DB
-    const authTokenHandler = new AuthTokenHandler(req);
     authTokenHandler.register(id, entity.name, access);
 
     // Signing token
-    const authToken = jwt.sign({ access, id }, secret);
+    const authToken = (entity?.auth?.type !== "jwt") ? access : jwt.sign({ access, id }, secret);
 
     // Returning token
     res.setHeader("x-auth-token", authToken);
