@@ -21,7 +21,15 @@ export default class Server {
   }
 
   async run() {
-    this.databases = new Databases(this.json);
-    this.servers = await ServerTypes.setup(this.json);
+    try {
+      this.databases = new Databases(this.json);
+      this.servers = await ServerTypes.setup(this.json);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getServerByPort(port) {
+    return this.servers.find(server => server.port === port);
   }
 }

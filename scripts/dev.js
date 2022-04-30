@@ -89,4 +89,6 @@ server.setup({
 //   res.code(200).json({ status: true });
 // });
 
+// server.getServerByPort(3501)
+
 server.run();
