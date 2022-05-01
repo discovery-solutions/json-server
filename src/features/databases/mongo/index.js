@@ -21,7 +21,7 @@ export default class MongoDB extends CRUD {
 
       return this;
     } catch (e) {
-      console.log(e);
+      logger(e);
       return e;
     }
   }
@@ -30,7 +30,7 @@ export default class MongoDB extends CRUD {
     try {
       await this.db.createCollection(entity);
     } catch (e) {
-      // console.log(e);
+      // logger(e);
     }
 
     this.entity = entity;

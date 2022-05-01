@@ -10,6 +10,7 @@ export default class Server {
     this.name = json.name;
 
     global["json-server"].json = json;
+    global.logger = json.logger || console.log;
   }
 
   setup({ request, database }) {
@@ -23,9 +24,9 @@ export default class Server {
   async run() {
     try {
       this.databases = new Databases(this.json);
-      this.servers = await ServerTypes.setup(this.json);
+      this.servers = new ServerTypes(this.json);
     } catch (e) {
-      console.log(e);
+      logger(e);
     }
   }
 

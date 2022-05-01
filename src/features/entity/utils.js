@@ -19,5 +19,5 @@ export function validateByEntityModel(data, { fields }) {
 }
 
 export function getID(url) {
-  return url.split("/")[2];
+  return url.splitted[1];
 }

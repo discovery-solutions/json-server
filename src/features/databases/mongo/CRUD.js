@@ -46,7 +46,7 @@ export default class CRUD {
 
       return await this.findByID(res.insertedId);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return false;
     }
   }

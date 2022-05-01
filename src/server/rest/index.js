@@ -9,10 +9,10 @@ export default class Rest {
     this.port = port;
     this.host = Utils.getIP();
 
-    this.server = http.createServer( new Handler(props) );
+    this.app = http.createServer( new Handler(props) );
 
-    this.server.listen(this.port, this.host, () => {
-      console.log(`Server running on http://${this.host}:${this.port}`);
+    this.app.listen(this.port, this.host, () => {
+      logger(`Server running on http://${this.host}:${this.port}`);
     });
 
     return this;

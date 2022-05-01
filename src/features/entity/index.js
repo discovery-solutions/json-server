@@ -47,7 +47,7 @@ class EntityHandler {
 
       return 404;
     } catch (e) {
-      console.log(e);
+      logger(e);
       return 500;
     }
   }
@@ -96,7 +96,7 @@ class EntityHandler {
 
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -123,7 +123,7 @@ class EntityHandler {
 
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -161,7 +161,7 @@ class EntityHandler {
 
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -189,7 +189,7 @@ class EntityHandler {
 
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -199,6 +199,10 @@ class EntityHandler {
       // Extracting data from request
       const entityID = getID(this.request.url);
       const body = this.request.body;
+
+      // Validating ID
+      if (this.database.validateID(entityID) === false)
+        return this.next(400);
 
       // Cleaning object to allow only keys from entity fields
       const validKeys = Object.keys(this.entity.fields);
@@ -236,7 +240,7 @@ class EntityHandler {
       // Returning response
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -253,7 +257,7 @@ class EntityHandler {
       // Returning response
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }
@@ -270,7 +274,7 @@ class EntityHandler {
       // Returning response
       return this.next(200);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return this.next(500);
     }
   }

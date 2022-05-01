@@ -31,7 +31,7 @@ export default class EventListener {
         if (status === false)
           return false;
       } catch (e) {
-        console.log(e);
+        logger(e);
         return false;
       }
     }

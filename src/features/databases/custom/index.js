@@ -27,7 +27,7 @@ export default class CustomDB extends CRUD {
     await this.storage.setEntity(entity);
 
     if (typeof this.storage.db[this.name][this.entity] === "undefined")
-      this._set([]);
+      this.storage.set([]);
   }
 
   count = async (query = {}) => {
@@ -35,6 +35,9 @@ export default class CustomDB extends CRUD {
   }
 
   validateID = async (id) => {
+    if (typeof id !== "string")
+      return false;
+      
     return id.match(/^[0-9a-fA-F]{24}$/);
   }
 }

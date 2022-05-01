@@ -41,22 +41,31 @@ eventListener.set(async (req, res) => {
     get: PERMISSIONS.GET,
   }
 
+  const doesNeedAuthentication = getJSON().entities.filter(entity => {
+    return typeof entity.auth === "object";
+  }).length > 0;
+
+  if (doesNeedAuthentication === false)
+    return false;
+
   for (const key of Object.keys(URL)) {
     if ( URL[key](req) ) {
       const permissions = req.entity?.auth?.permission;
 
-      const permission = permissionByURL[key] || PERMISSIONS.LIST;
-      const authPermission = permissions[req.entity.name] || permissions["*"];
+      if (permissions) {
+        const permission = permissionByURL[key] || PERMISSIONS.LIST;
+        const authPermission = permissions[req.entity.name] || permissions["*"];
 
-      const isAuthenticated = !!req.auth;
-      const hasPermission = !!authPermission[permission];
+        const isAuthenticated = !!req.auth;
+        const hasPermission = !!authPermission[permission];
 
-      if (hasPermission && isAuthenticated)
-        return false;
+        if (hasPermission && isAuthenticated)
+          return false;
+      }
     }
   }
 
-  const whitelist = [REQUESTS.LOGIN.PATH, REQUESTS.REFRESH.PATH];
+  const whitelist = Object.values(REQUESTS).map(item => item.PATH);
 
   if (whitelist.includes(req.url.value))
     return false;

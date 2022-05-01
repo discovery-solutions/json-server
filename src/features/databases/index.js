@@ -29,13 +29,13 @@ export default class Databases {
 
         databases[item.key] = db;
       } catch (e) {
-        console.log(e);
+        logger(e);
         databases[item.key] = e;
       }
     }
 
     if (Object.keys(databases).length === 0)
-      console.log("No databases connected");
+      logger("No databases connected");
   }
 
   getClassByType(type) {

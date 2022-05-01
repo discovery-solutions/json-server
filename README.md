@@ -97,7 +97,7 @@ Things to do:
   * [x] Authorization handler
 * [ ] Full search for all entities
 * [x] Interceptor to add custom requests
-* [ ] Add logger for request and API transactions
+* [x] Add logger for request and API transactions
 * [ ] Bulk actions
   * [x] Bulk insert
   * [ ] Bulk update

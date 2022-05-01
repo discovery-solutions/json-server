@@ -3,17 +3,30 @@ import Rest from "./rest/";
 import "features/auth";
 
 export default class ServerTypes {
-  static async setup({ config }) {
-    const servers = [];
+  constructor({ config }) {
+    this.servers = [];
 
     for (const configItem of Utils.getArray(config)) {
       if (configItem.type === CONSTANTS.SERVER.TYPES.REST) {
-        const server = new Rest(configItem);
+        const server = new Rest( this.getConfigData(configItem) );
 
-        servers.push( server );
+        this.servers.push( server );
       }
     }
 
-    return servers;
+    return this.servers;
+  }
+
+  getConfigData(item) {
+    const [ databaseSetup ] = Utils.getArray( Utils.getJSON().database );
+
+    let config = {
+      ...item
+    };
+
+    if (!config.database)
+      config.database = databaseSetup.key || CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
+
+    return config;
   }
 }

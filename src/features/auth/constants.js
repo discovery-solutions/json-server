@@ -12,6 +12,10 @@ export const AUTH = {
       PATH: "/system/refresh",
       METHOD: "POST",
     },
+    HOME: {
+      PATH: "/",
+      METHOD: "GET",
+    },
   },
   PERMISSIONS: {
     INSERT: "insert",

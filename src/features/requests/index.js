@@ -5,17 +5,18 @@ export default class Requests {
     try {
       const requestsByMethod = requests[req.method];
       const statusLog = [];
+      const url = req.url.value.length === 0 ? "/" : req.url.value;
 
       for (const key in requestsByMethod)
-        if ( req.url.value.search(key) > -1 )
+        if ( url === key )
           for (const callback of requestsByMethod[key])
             statusLog.push(
-              await Promise.resolve( callback(req, res) ).catch(console.log)
+              await Promise.resolve( callback(req, res) ).catch(logger)
             );
 
       return statusLog.length > 0 && statusLog.includes(false) === false;
     } catch (e) {
-      console.log(e);
+      logger(e);
 
       return false;
     }

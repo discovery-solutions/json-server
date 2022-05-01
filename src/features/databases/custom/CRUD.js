@@ -9,7 +9,7 @@ export default class CRUD {
 
       return records.slice(skip, limit);
     } catch (e) {
-      console.log(e);
+      logger(e);
       return false;
     }
   }
@@ -46,7 +46,7 @@ export default class CRUD {
 
       return record;
     } catch (e) {
-      console.log(e);
+      logger(e);
       return false;
     }
   }
@@ -93,7 +93,7 @@ export default class CRUD {
 
       return { modifiedCount: 1 }
     } catch (e) {
-      console.log(e);
+      logger(e);
       return false;
     }
   }
@@ -104,7 +104,7 @@ export default class CRUD {
 
       return record;
     } catch (e) {
-      console.log(e);
+      logger(e);
       return false;
     }
   }

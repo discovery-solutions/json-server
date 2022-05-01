@@ -27,7 +27,7 @@ export default class AuthTokenHandler {
       this.database.setEntity(DEFAULT_ENTITY);
       return entity;
     } catch (e) {
-      console.log(e);
+      logger(e);
 
       this.database.setEntity(DEFAULT_ENTITY);
       return false;
@@ -43,7 +43,7 @@ export default class AuthTokenHandler {
 
       return true;
     } catch (e) {
-      console.log(e);
+      logger(e);
 
       return false;
     }

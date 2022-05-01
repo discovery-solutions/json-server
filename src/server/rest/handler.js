@@ -6,7 +6,7 @@ import { toJSON, toCSV, getBody } from "./utils";
 
 export default class Handler {
   constructor({ format, port, type, database }) {
-    this.database = database || CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
+    this.database = database;
     this.format = format;
     this.type = type;
     this.port = port;

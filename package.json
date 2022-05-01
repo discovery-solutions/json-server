@@ -7,10 +7,19 @@
   "license": "ISC",
   "homepage": "https://github.com/discovery-solutions/json-server#readme",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_PATH=./src/ jest --detect-open-handles",
+    "test:server": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules ./scripts/test.js",
+    "test:watch": "NODE_PATH=./src/ jest --watch --detect-open-handles",
     "build": "rimraf dist && babel src --out-dir dist --copy-files",
     "start": "node dist/index.js",
-    "dev": "NODE_PATH=./src nodemon --exec babel-node --presets=@babel/preset-env ./scripts/dev.js"
+    "dev": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules ./scripts/dev.js"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": ["scripts", "src"],
+    "testEnvironment": "jest-environment-node",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   },
   "nodemonConfig": {
     "ignore": [
@@ -22,6 +31,9 @@
     "@babel/core": "^7.17.9",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
+    "axios": "^0.27.2",
+    "babel-jest": "^28.0.3",
+    "jest": "^28.0.3",
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2"
   },
