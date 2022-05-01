@@ -1,7 +1,7 @@
 # Complete Example
 
 ```js
-import Server from "../src/";
+import Server from "@discovery-solutions/json-server";
 
 const server = new Server({
   name: "my-server",
