@@ -7,15 +7,15 @@
   "license": "ISC",
   "homepage": "https://github.com/discovery-solutions/json-server#readme",
   "scripts": {
-    "test": "NODE_PATH=./src/ jest --detect-open-handles",
-    "test:server": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules ./scripts/test.js",
+    "dev": "npm run start ./scripts/dev.js",
+    "test": "clear && NODE_PATH=./src/ jest --detect-open-handles",
+    "start": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules --config nodemon.config.json ",
+    "test:server": "npm run start ./scripts/test.js",
     "test:watch": "NODE_PATH=./src/ jest --watch --detect-open-handles",
-    "build": "rimraf dist && babel src --out-dir dist --copy-files",
-    "start": "node dist/index.js",
-    "dev": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules ./scripts/dev.js"
+    "build": "rimraf dist && babel src --out-dir dist --copy-files"
   },
   "jest": {
-    "modulePathIgnorePatterns": ["scripts", "src"],
+    "modulePathIgnorePatterns": ["scripts", "src", "db.json"],
     "testEnvironment": "jest-environment-node",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"

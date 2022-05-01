@@ -11,7 +11,7 @@ export default class LocalStorage {
   }
 
   writeFile = data => fs.writeFileSync("db.json", JSON.stringify(data, null, 2));
-  readFile = () => JSON.parse( fs.readFileSync("db.json", "utf8") ) || {}
+  readFile = () => JSON.parse( fs.readFileSync("db.json", "utf8") ) || {};
 
   getAll = () => {
     this.db = this.readFile();

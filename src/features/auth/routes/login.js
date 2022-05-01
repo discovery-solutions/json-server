@@ -29,15 +29,12 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
       }
     }
 
-    if (!entity)
-      return false;
+    // Could not identify credentials
+    if (!entityData || !entity)
+      return (res.statusCode = 401);
 
     if (entity?.auth?.secret)
       secret = entity.auth.secret;
-
-    // Could not identify credentials
-    if (!entityData)
-      return (res.statusCode = 401);
 
     // Generating token
     const authTokenHandler = new AuthTokenHandler(req);
@@ -45,11 +42,11 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
     const id = useID(entityData);
     const access = authTokenHandler.generate();
 
-    // Recording access token on DB
-    authTokenHandler.register(id, entity.name, access);
-
     // Signing token
     const authToken = (entity?.auth?.type !== "jwt") ? access : jwt.sign({ access, id }, secret);
+
+    // Recording access token on DB
+    await authTokenHandler.register(id, entity.name, authToken);
 
     // Returning token
     res.setHeader("x-auth-token", authToken);

@@ -23,5 +23,12 @@ export const AUTH = {
     DELETE: "delete",
     LIST: "list",
     GET: "get",
+  },
+  PERMISSIONS_BY_METHODS: {
+    POST: ["insert"],
+    PATCH: ["update"],
+    DELETE: ["delete"],
+    LIST: ["list"],
+    GET: ["get"],
   }
 }
