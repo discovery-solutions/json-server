@@ -7,35 +7,37 @@ export default class AuthTokenHandler {
   constructor({ entity, server }) {
     DEFAULT_ENTITY = CONSTANTS.SERVER.SETTINGS.DATABASE.AUTH;
 
+    this.server = server;
     this.database = Databases.get(server?.database);
     this.database.setEntity(DEFAULT_ENTITY);
   }
 
   async validate(token) {
     try {
-      const records = await this.database.find({ token });
+      const record = await this.database.find({ token });
 
-      if (records.length === 0)
+      if (!record)
         return false;
 
-      const [ record ] = records;
+      const entityDB = Databases.get(this.server?.database);
+      await entityDB.setEntity(record.entity.type);
 
-      await this.database.setEntity(record.entity.type);
+      const entity = await entityDB.findByID(record.entity.id);
 
-      const entity = await this.database.findByID(record.entity.id);
+      await this.database.setEntity(DEFAULT_ENTITY);
 
-      this.database.setEntity(DEFAULT_ENTITY);
       return entity;
     } catch (e) {
       logger(e);
 
-      this.database.setEntity(DEFAULT_ENTITY);
       return false;
     }
   }
 
   async register(id, type, token) {
     try {
+      await this.database.setEntity(DEFAULT_ENTITY);
+
       const status = await this.database.insert({
         token: token,
         entity: { type, id }

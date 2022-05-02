@@ -8,6 +8,8 @@ export default class Databases {
   constructor(json) {
     this.list = Utils.getArray(json.database);
 
+    this.databases = databases;
+
     if (this.list.length === 0) {
       this.list.push({
         name: CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT,
@@ -27,14 +29,14 @@ export default class Databases {
 
         await db.connect();
 
-        databases[item.key] = db;
+        this.databases[item.key] = db;
       } catch (e) {
         logger(e);
-        databases[item.key] = e;
+        this.databases[item.key] = e;
       }
     }
 
-    if (Object.keys(databases).length === 0)
+    if (Object.keys(this.databases).length === 0)
       logger("No databases connected");
   }
 
@@ -51,7 +53,24 @@ export default class Databases {
     }
   }
 
+  getDB(key = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT) {
+    return this.databases[key];
+  }
+
   static get(key = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT) {
     return databases[key];
+  }
+
+  static closeAll(callback) {
+    const closed = [];
+
+    for (const key in databases) {
+      if (typeof databases[key]?.client?.close === "function") {
+        databases[key].client.close();
+        closed.push(key);
+      }
+    }
+
+    return closed;
   }
 }

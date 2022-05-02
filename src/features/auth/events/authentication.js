@@ -27,7 +27,7 @@ eventListener.set(async (req, res) => {
     return false;
 
   // Identify public access entity routes
-  const validPermissions = Object.keys(req?.entity?.permission || {})?.filter(key => req.entity?.permission[key]);
+  const validPermissions = Object.keys(req?.entity?.permission || {})?.filter(key => req.entity?.permission[key] === true);
   const isPublicRequest = !!validPermissions?.find(key => PERMISSIONS_BY_METHODS[req.method].includes(key));
 
   if (isPublicRequest)

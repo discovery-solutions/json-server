@@ -1,7 +1,9 @@
+import path from "path";
 import fs from "fs";
 
 export default class LocalStorage {
   constructor(database) {
+    this.filePath = path.join(process.cwd(), "db.json");
     this.name = database;
     this.db = this.readFile();
   }
@@ -10,8 +12,16 @@ export default class LocalStorage {
     this.entity = entity;
   }
 
-  writeFile = data => fs.writeFileSync("db.json", JSON.stringify(data, null, 2));
-  readFile = () => JSON.parse( fs.readFileSync("db.json", "utf8") ) || {};
+  writeFile = data => fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+  readFile = () => {
+    const fileExists = fs.existsSync(this.filePath);
+
+    if (fileExists)
+      return JSON.parse( fs.readFileSync(this.filePath, "utf8") );
+
+    fs.writeFileSync(this.filePath, "{}");
+    return {};
+  }
 
   getAll = () => {
     this.db = this.readFile();

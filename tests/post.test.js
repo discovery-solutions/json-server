@@ -1,28 +1,24 @@
-import LocalStorage from "features/databases/custom/LocalStorage";
+import { useDB, useID } from "utilities/tests/utils";
 import { DB, POST } from "utilities/tests/constants";
-import { ObjectId } from "mongodb";
+import Databases from "features/databases";
 import axios from "utilities/tests/axios";
 
 // Setting up post for tests
-const localStorage = new LocalStorage(DB);
-localStorage.setEntity(POST.name);
-
-const id = new ObjectId();
-const post = {
+let id, storage = useDB(DB, POST);
+let post = {
   title: "My Post Title",
-  body: "My Body Post",
-  id: id,
+  body: "My Body Post"
 }
 
 describe("Entity Routes Without Authentication", () => {
-  const validateResponse = ({ data }, testFor) => {
+  const validateResponse = ({ data, ...rest }, testFor) => {
     switch (testFor) {
       case "success": {
         expect(data?.status).toBe(true);
         expect(data?.code).toBe(200);
         expect(typeof data.message).toBe("string");
         expect(typeof (data.post || data.records)).toBe("object");
-        expect(Object.keys(data.post || data.records).length).toBeTruthy();
+        expect(Object.keys(data.post || data.records).length >= 0).toBeTruthy();
         break;
       }
       case "error":
@@ -34,8 +30,12 @@ describe("Entity Routes Without Authentication", () => {
     }
   }
 
-  beforeAll(() => {
-    localStorage.add(post);
+  beforeAll(async () => {
+    await storage.connect();
+
+    post = await storage.insert(post);
+
+    id = useID(post);
   });
 
   test("POST /post", async () => {
@@ -45,16 +45,16 @@ describe("Entity Routes Without Authentication", () => {
 
   });
 
-  test("PATCH /post/" + id, async () => {
-    const res = await axios.patch("/post/" + id, {
+  test("PATCH /post/{id}", async () => {
+    const res = await axios.patch("/post/"+ id, {
       title: "Post title updated"
     });
 
     validateResponse(res, "error");
   });
 
-  test("GET /post/" + id, async () => {
-    const res = await axios.get("/post/" + id);
+  test("GET /post/{id}", async () => {
+    const res = await axios.get("/post/"+ id);
 
     validateResponse(res, "success");
   });
@@ -77,15 +77,15 @@ describe("Entity Routes Without Authentication", () => {
     validateResponse(res, "success");
   });
 
-  test("DELETE /post/" + id, async () => {
-    const res = await axios.delete("/post/" + id);
+  test("DELETE /post/{id}", async () => {
+    const res = await axios.delete("/post/"+ id);
 
     validateResponse(res, "error");
   });
 
-  afterAll(() => {
-    localStorage.set(
-      localStorage.getAll().filter(item => item.title !== post.title)
-    );
+  afterAll(async () => {
+    await storage.deleteByID( useID(post) );
+
+    Databases.closeAll();
   });
 });

@@ -32,3 +32,5 @@ export const AUTH = {
     GET: ["get"],
   }
 }
+
+export const WHITELIST = Object.values(AUTH.REQUESTS).map(item => item.PATH);

@@ -68,7 +68,7 @@ export const JSON_EXAMPLE = {
   database: {
     type: "custom",
     key: DB,
-    name: DB
+    name: DB,
   },
   entities: [USER, POST]
 };

@@ -1,5 +1,6 @@
 import EventListener, { Events } from "utilities/event-listener";
 import AuthTokenHandler from "../token";
+import { WHITELIST } from "../constants";
 import { getJSON } from "utilities/utils";
 
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
@@ -20,7 +21,9 @@ eventListener.set(async (req, res) => {
   if (typeof authToken === "undefined")
     return true;
 
-  const authTokenHandler = new AuthTokenHandler(req);
+  if (WHITELIST.includes(req.url.value))
+    return true;
 
+  const authTokenHandler = new AuthTokenHandler(req);
   req.auth = await authTokenHandler.validate(authToken);
 });

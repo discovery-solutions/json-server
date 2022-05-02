@@ -1,18 +1,14 @@
-import LocalStorage from "features/databases/custom/LocalStorage";
+import { useDB, useID } from "utilities/tests/utils";
 import { DB, USER } from "utilities/tests/constants";
-import { ObjectId } from "mongodb";
+import Databases from "features/databases";
 import axios from "utilities/tests/axios";
 
-// Setting up user for tests
-const localStorage = new LocalStorage(DB);
-localStorage.setEntity(USER.name);
-
-let token, id;
+let id, storage = useDB(DB, USER);
+const users = [];
 const user = {
-  id: new ObjectId(),
   name: "My User Name",
   email: "user-email@email.com",
-  password: "my-password-1",
+  password: Date.now().toString(),
 }
 
 describe("Entity Routes With Valid Authentication", () => {
@@ -25,27 +21,35 @@ describe("Entity Routes With Valid Authentication", () => {
       expect(typeof (data.user || data.records)).toBe("object");
       expect(Object.keys(data.user || data.records).length).toBeTruthy();
     }
-  }
+  };
 
   beforeAll(async () => {
-    localStorage.add(user);
+    await storage.connect();
 
-    const { data, headers } = await axios.post("/system/auth", user);
+    users.push( useID( await storage.insert(user) ) );
+  });
 
-    if (data.status)
-      axios.defaults.headers.common["x-auth-token"] = headers["x-auth-token"];
+  beforeEach(async () => {
+    try {
+      const { data, headers } = await axios.post("/system/auth", user);
+
+      if (data.status)
+        axios.defaults.headers.common["x-auth-token"] = headers["x-auth-token"];
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   test("POST /user", async () => {
     const res = await axios.post("/user", {
-      password: user.password,
+      password: Date.now().toString(),
       email: user.email,
       name: user.name,
     });
 
     validateResponse(res);
 
-    id = res?.data?.user?.id;
+    id = useID(res?.data?.user);
   });
 
   test("PATCH /user/{id}", async () => {
@@ -86,9 +90,10 @@ describe("Entity Routes With Valid Authentication", () => {
     validateResponse(res, "delete");
   });
 
-  afterAll(() => {
-    localStorage.set(
-      localStorage.getAll().filter(item => item.name !== user.name)
-    );
+  afterAll(async () => {
+    for (const userID of users)
+      await storage.deleteByID(userID.toString());
+
+    Databases.closeAll();
   });
 });

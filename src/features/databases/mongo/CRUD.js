@@ -20,7 +20,9 @@ export default class CRUD {
   }
 
   async find(data) {
-    return await this.collection.findOne(data);
+    const records = await this.collection.findOne(data);
+    
+    return records;
   }
 
   async findByID(id) {
@@ -44,7 +46,7 @@ export default class CRUD {
         ...data,
       });
 
-      return await this.findByID(res.insertedId);
+      return await this.find(data);
     } catch (e) {
       logger(e);
       return false;

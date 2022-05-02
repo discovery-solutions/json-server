@@ -15,17 +15,18 @@ export default class CRUD {
   }
 
   find = async (query) => {
-    return this.storage.find(query);
+    try {
+      const [ record ] = await this.storage.find(query);
+
+      return record || false;
+    } catch (e) {
+      return false;
+    }
   }
 
   findByID = async (id) => {
     try {
-      const [ record ] = await this.storage.find({ id });
-
-      if (record)
-        return record;
-
-      return false;
+      return await this.find({ id }) || false;
     } catch (e) {
       return false;
     }

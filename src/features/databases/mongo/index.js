@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import * as Utils from "utilities/utils";
 import CRUD from "./CRUD";
 
 export default class MongoDB extends CRUD {
@@ -9,8 +10,6 @@ export default class MongoDB extends CRUD {
     this.name = name;
     this.uri = uri;
     this.key = key;
-
-    return this;
   }
 
   async connect() {
@@ -21,7 +20,7 @@ export default class MongoDB extends CRUD {
 
       return this;
     } catch (e) {
-      logger(e);
+      console.log(e);
       return e;
     }
   }
@@ -30,7 +29,7 @@ export default class MongoDB extends CRUD {
     try {
       await this.db.createCollection(entity);
     } catch (e) {
-      // logger(e);
+      // console.log(e);
     }
 
     this.entity = entity;

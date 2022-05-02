@@ -20,10 +20,17 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
     for (const entityItem of getJSON().entities) {
       if (typeof entityItem.auth === "object") {
         await database.setEntity(entityItem.name);
-        const records = await database.find(req.body);
+        const record = await database.find(
+          Object.keys(req.body).reduce((obj, key) => {
+            if ( entityItem?.auth?.fields?.includes(key) )
+              obj[key] = req.body[key];
 
-        if (records.length > 0) {
-          entityData = records[0];
+            return obj;
+          }, {})
+        );
+
+        if (record && Object.keys(record).length > 0) {
+          entityData = record;
           entity = entityItem;
         }
       }

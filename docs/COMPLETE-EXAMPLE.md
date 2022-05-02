@@ -30,7 +30,7 @@ const server = new Server({
     type: "mongo",
     key: "my-db-2",
     name: "my-mongo-db",
-    uri: "mongodb+srv://default-user:user-password@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority",
+    uri: "mongodb+srv://...",
   }],
   entities: [{
     name: "user",

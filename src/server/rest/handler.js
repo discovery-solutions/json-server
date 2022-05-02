@@ -32,6 +32,8 @@ export default class Handler {
       port: this.port,
     }
 
+    logger(req.method + " " + req.url);
+
     // Handle file requests
     const isFileRequest = req.url.split(".").length > 1;
 
