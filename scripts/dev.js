@@ -1,9 +1,5 @@
 import Server from "../src/";
 
-// TODO: Socket server
-
-// TODO: vinculate server to specific database using key
-
 const server = new Server({
   name: "my-server",
   config: [{
@@ -82,10 +78,6 @@ server.setup({
     limit: 5
   }
 });
-
-// server.routes.get("/banana", (req, res) => {
-//   res.code(200).json({ status: true });
-// });
 
 // server.getServerByPort(3501)
 

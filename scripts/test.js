@@ -3,8 +3,4 @@ import Server from "../src/";
 
 const server = new Server(JSON_EXAMPLE);
 
-server.routes.get("/my/endpoint", (req, res) => {
-  res.json({ message: "It's working "})
-})
-
 server.run();

@@ -120,7 +120,6 @@ const server = new Server({
 ```
 
 ### Database
-
 ```...```
 
 ### Entities
