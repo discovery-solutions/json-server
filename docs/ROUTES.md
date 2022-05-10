@@ -9,6 +9,11 @@
 | [/{entity}/{id}](#delete-single-record-by-ID) | DELETE | Delete single record by ID |
 | [/{entity}/latest](#list-records-by-oldest) | GET | List records by latest |
 | [/{entity}/oldest](#list-records-by-oldest) | GET | List records by oldest |
+| ------- | ------- | -------- |
+| [/system/search](#system-search) | GET | Search |
+| [/system/auth](#system-login) | POST | Login |
+| [/system/](#system-status) | GET | System Status |
+| [/](#system-status) | GET | System Status |
 
 ## List all records by entity
 

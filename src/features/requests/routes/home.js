@@ -1,11 +1,13 @@
 import Requests from "features/requests";
 import { ROUTES } from "../constants";
 
-const [ method, path ] = ROUTES.HOME;
 const requests = new Requests();
 
-requests.use(method, path, async (req, res) => {
+const callback = async (req, res) => {
   return res.json({
     message: "API Running"
   });
-});
+}
+
+for (const [ method, path ] of [ROUTES.HOME, ROUTES.SYSTEM])
+  requests.use(method, path, callback);
