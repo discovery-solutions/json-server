@@ -53,7 +53,8 @@ export const USER = {
     },
     password: {
       type: "string",
-      required: true
+      required: true,
+      secure: true,
     },
   }
 }
@@ -66,7 +67,9 @@ export const JSON_EXAMPLE = {
     format: "json"
   },
   database: {
-    type: "custom",
+    // type: "custom",
+    type: "mongo",
+    uri: "mongodb+srv://dbAdmin:dbPassword@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority",
     key: DB,
     name: DB,
   },

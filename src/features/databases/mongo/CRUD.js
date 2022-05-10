@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { getJSON } from "utilities/utils";
 
 export default class CRUD {
   constructor() {
@@ -21,7 +22,7 @@ export default class CRUD {
 
   async find(data) {
     const records = await this.collection.findOne(data);
-    
+
     return records;
   }
 
@@ -120,5 +121,46 @@ export default class CRUD {
                 .limit(CONSTANTS.SERVER.SETTINGS.REQUEST.LIMIT)
                 .sort({ $natural: 1 })
                 .toArray();
+  }
+
+  async search($search, subquery = true) {
+    const { entities } = getJSON();
+    const records = [];
+
+    for (const { name, fields } of entities) {
+      const collection = this.db.collection(name);
+      const searchFields = Object.keys(fields).filter(k => [fields[k], fields[k]?.type].includes("string") && fields[k]?.secure !== true);
+      let params = {
+        $text: {
+          $diacriticSensitive: false,
+          $caseSensitive: false,
+          $search: $search,
+        }
+      }
+
+      if (typeof $search !== "string") {
+        params = searchFields.reduce((obj, key) => {
+          obj[key] = $search;
+
+          return obj;
+        }, {});
+      }
+
+      const data = await collection.find(params).toArray();
+
+      if (data.length > 0) {
+        records.push(
+          data.map(item => ({
+            type: name,
+            record: item
+          }))
+        );
+      }
+    }
+
+    if (records.length === 0 && subquery)
+      return this.search( new RegExp($search, "gi"), false );
+
+    return records.flat();
   }
 }

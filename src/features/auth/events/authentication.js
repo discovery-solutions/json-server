@@ -1,5 +1,6 @@
 import EventListener, { Events } from "utilities/event-listener";
 import { getJSON } from "utilities/utils";
+import Requests from "features/requests";
 import URL from "features/entity/url";
 
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
@@ -50,10 +51,17 @@ eventListener.set(async (req, res) => {
     }
   }
 
-  const whitelist = Object.values(REQUESTS).map(item => item.PATH);
+  for (const { path, method, options } of Requests.getRequests()) {
+    if (path === req.url.base && method === req.method) {
+      // If route is public, then allow access
+      if (options.public === true)
+        return false;
 
-  if (whitelist.includes(req.url.value))
-    return false;
+      // If route is private and there's some entity authenticated, then allow access
+      if (options.public === false && !!req.auth)
+        return false
+    }
+  }
 
   res.statusCode = 401;
   return true;

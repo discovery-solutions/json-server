@@ -1,6 +1,8 @@
 import * as Utils from "utilities/utils";
 import Rest from "./rest/";
+
 import "features/auth";
+import "features/requests/routes";
 
 export default class ServerTypes {
   constructor({ config }) {

@@ -27,3 +27,25 @@ export function getIP() {
 export function useID(data = {}) {
   return data.id || data._id;
 }
+
+export async function asyncTry(callback) {
+  try {
+    return await Promise.resolve(callback());
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+export function secureEntity(entityData, { fields }) {
+  if (!entityData || !fields)
+    return entityData;
+
+  const securedKeys = Object.keys(fields).filter(k => fields[k]?.secure === true);
+
+  return Object.keys(entityData).reduce((obj, k) => {
+    if ( securedKeys.includes(k) === false )
+      obj[k] = entityData[k];
+
+      return obj;
+  }, {});
+}

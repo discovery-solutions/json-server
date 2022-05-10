@@ -23,6 +23,9 @@ global.CONSTANTS = {
       },
       REQUEST: {
         LIMIT: 10,
+      },
+      LANGUAGE: {
+        DEFAULT: "pt",
       }
     }
   }

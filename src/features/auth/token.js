@@ -1,32 +1,41 @@
 import Databases from "features/databases";
+import * as Utils from "utilities/utils";
 import crypto from "crypto";
 
-let DEFAULT_ENTITY;
+let DEFAULT_ENTITY, DB;
 
 export default class AuthTokenHandler {
   constructor({ entity, server }) {
     DEFAULT_ENTITY = CONSTANTS.SERVER.SETTINGS.DATABASE.AUTH;
+    DB = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
 
     this.server = server;
-    this.database = Databases.get(server?.database);
+    this.database = Databases.get(server?.database || DB);
     this.database.setEntity(DEFAULT_ENTITY);
   }
 
   async validate(token) {
     try {
-      const record = await this.database.find({ token });
+      await this.database.setEntity(DEFAULT_ENTITY);
 
-      if (!record)
-        return false;
+      const auth = await this.database.find({ token });
 
-      const entityDB = Databases.get(this.server?.database);
-      await entityDB.setEntity(record.entity.type);
+      if (!auth.entity)
+        return [false, false];
 
-      const entity = await entityDB.findByID(record.entity.id);
+      const entityDB = Databases.get(this.server?.database || DB);
+      await entityDB.setEntity(auth.entity.type);
+
+      const entity = await entityDB.findByID(auth.entity.id);
 
       await this.database.setEntity(DEFAULT_ENTITY);
 
-      return entity;
+      const entityModel = Utils.getJSON().entities.find(e => e.name === auth.entity.type);
+
+      return [
+        Utils.secureEntity(entity, entityModel),
+        auth.entity.type,
+      ];
     } catch (e) {
       logger(e);
 

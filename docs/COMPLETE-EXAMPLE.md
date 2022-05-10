@@ -46,7 +46,8 @@ const server = new Server({
       },
       password: {
         type: "string",
-        required: true
+        required: true,
+        secure: true,
       },
       phone: "string",
       birthdate: "date",
@@ -86,6 +87,7 @@ const server = new Server({
 });
 
 server.setup({
+  language: "pt",
   database: {
     default: "my-project-default-name",
   },

@@ -1,4 +1,4 @@
-import { useID, getJSON } from "utilities/utils";
+import { useID, getJSON, secureEntity } from "utilities/utils";
 import Databases from "features/databases";
 import Requests from "features/requests";
 import jwt from "jsonwebtoken";
@@ -20,14 +20,15 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
     for (const entityItem of getJSON().entities) {
       if (typeof entityItem.auth === "object") {
         await database.setEntity(entityItem.name);
-        const record = await database.find(
-          Object.keys(req.body).reduce((obj, key) => {
-            if ( entityItem?.auth?.fields?.includes(key) )
-              obj[key] = req.body[key];
 
-            return obj;
-          }, {})
-        );
+        const search = Object.keys(req.body).reduce((obj, key) => {
+          if ( entityItem?.auth?.fields?.includes(key) )
+            obj[key] = req.body[key];
+
+          return obj;
+        }, {});
+
+        const record = await database.find(search);
 
         if (record && Object.keys(record).length > 0) {
           entityData = record;
@@ -57,8 +58,10 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
 
     // Returning token
     res.setHeader("x-auth-token", authToken);
+
+    // Returning entity data
     res.payload = {
-      [entity.name]: entityData
+      [entity.name]: secureEntity(entityData, entity)
     }
 
     return true;

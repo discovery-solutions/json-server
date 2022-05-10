@@ -130,13 +130,14 @@ const server = new Server({
 
 # Roadmap
 
-Things to do:
+Things to do now:
 
 * [x] CRUD routes
   * [x] Insert
   * [x] List/Get
   * [x] Update
   * [x] Delete
+  * [x] Bulk insert
 * [x] Authentication
   * [x] JWT
   * [x] Simple Token
@@ -152,6 +153,11 @@ Things to do:
   * [ ] PostgreSQL
   * [x] MongoDB
   * [ ] MySQL
+
+Future features:
+* [ ] Blog setup (?)
+* [ ] Chat setup (?)
+* [ ] Ecommerce Setup (?)
 * [ ] Bulk actions
   * [x] Bulk insert
   * [ ] Bulk update

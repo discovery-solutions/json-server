@@ -12,11 +12,27 @@ export default class MongoDB extends CRUD {
     this.key = key;
   }
 
+  async createTextIndexes() {
+    for (const entity of Utils.getJSON().entities) {
+      try {
+        const collection = this.db.collection(entity.name);
+
+        await collection.createIndex({ "$**": "text" }, {
+          default_language: CONSTANTS.SERVER.SETTINGS.LANGUAGE.DEFAULT
+        });
+      } catch (e) {
+        // console.log(e);
+      }
+    }
+  }
+
   async connect() {
     try {
       await this.client.connect();
 
       this.db = this.client.db(this.name);
+
+      await this.createTextIndexes();
 
       return this;
     } catch (e) {
@@ -25,15 +41,13 @@ export default class MongoDB extends CRUD {
     }
   }
 
-  async setEntity(entity) {
-    try {
-      await this.db.createCollection(entity);
-    } catch (e) {
-      // console.log(e);
-    }
+  async setEntity(entityName) {
+    await Utils.asyncTry(async () => {
+      await this.db.createCollection(entityName);
+    });
 
-    this.entity = entity;
-    this.collection = this.db.collection(entity);
+    this.entity = entityName;
+    this.collection = this.db.collection(entityName);
   }
 
   async count(query = {}) {
