@@ -13,8 +13,8 @@ const URL = {
   list: test("LIST", url => url === 1),
   get: test("GET", url => url === 2),
 
-  oldest: req => req.url.value.search("oldest") > -1 && req.method === CONSTANTS.SERVER.METHODS.GET,
-  latest: req => req.url.value.search("latest") > -1 && req.method === CONSTANTS.SERVER.METHODS.GET,
+  oldest: req => req?.url?.value?.search("oldest") > -1 && req?.method === CONSTANTS.SERVER.METHODS.GET,
+  latest: req => req?.url?.value?.search("latest") > -1 && req?.method === CONSTANTS.SERVER.METHODS.GET,
 }
 
 export default URL;

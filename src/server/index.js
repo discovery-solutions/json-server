@@ -27,7 +27,7 @@ export default class ServerTypes {
     };
 
     if (!config.database)
-      config.database = databaseSetup.key || CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
+      config.database = databaseSetup?.key || CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
 
     return config;
   }

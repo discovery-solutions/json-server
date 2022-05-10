@@ -36,7 +36,7 @@ export default {
 		}),
 		customResolver,
 		babel({
-			babelHelpers: "bundled",
+			babelHelpers: "runtime",
 			exclude: "node_modules/**",
 			presets: ["@babel/preset-env"]
 		}),
