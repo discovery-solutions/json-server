@@ -3,15 +3,13 @@ import Databases from "features/databases";
 import ServerTypes from "server";
 import "utilities/constants";
 
-global["json-server"] = {};
-
 export default class Server {
   constructor(json) {
     this.json = json;
     this.name = json.name;
     this.routes = new Requests();
 
-    global["json-server"].json = json;
+    global["json-server"] = json;
     global.logger = json.logger || console.log;
   }
 

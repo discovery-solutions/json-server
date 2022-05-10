@@ -1,7 +1,10 @@
-import { useDB, useID } from "utilities/tests/utils";
+import { useID, configureEnviroment } from "utilities/tests/utils";
 import { DB, USER } from "utilities/tests/constants";
+import { useDB } from "utilities/tests/database";
 import Databases from "features/databases";
 import axios from "utilities/tests/axios";
+
+configureEnviroment();
 
 // Setting up user to authenticate
 let id, storage = useDB(DB, USER);

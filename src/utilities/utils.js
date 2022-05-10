@@ -1,7 +1,7 @@
 import ip from "ip";
 
 export function getJSON() {
-  return global["json-server"].json || {};
+  return global["json-server"] || {};
 }
 
 export function getArray(data) {

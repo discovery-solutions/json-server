@@ -1,11 +1,11 @@
 import { METHODS } from "features/entity/constants";
-import { EVENTS } from "utilities/event-listener";
+import { Events } from "utilities/event-listener";
 import { AUTH } from "features/auth/constants";
 
 global.CONSTANTS = {
   SERVER: {
     METHODS: METHODS,
-    EVENTS: EVENTS,
+    EVENTS: Events,
     AUTH: AUTH,
     SECRET: "DEFAUL-SECRET-JSON-SERVER",
     TYPES: {

@@ -1,7 +1,10 @@
-import { useDB, useID } from "utilities/tests/utils";
+import { useID, configureEnviroment } from "utilities/tests/utils";
 import { DB, POST } from "utilities/tests/constants";
+import { useDB } from "utilities/tests/database";
 import Databases from "features/databases";
 import axios from "utilities/tests/axios";
+
+configureEnviroment();
 
 // Setting up post for tests
 let id, storage = useDB(DB, POST);
