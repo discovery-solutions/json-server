@@ -90,7 +90,7 @@ class EntityHandler {
 
       // Returning response
       this.response = {
-        records: records,
+        records: Utils.secureEntity(records, this.request.entity),
         count: count,
       }
 
@@ -118,7 +118,7 @@ class EntityHandler {
 
       // Returning response
       this.response = {
-        [this.entity.name]: entity
+        [this.entity.name]: Utils.secureEntity(entity, this.request.entity),
       }
 
       return this.next(200);
@@ -155,8 +155,10 @@ class EntityHandler {
       if ( responseData.includes(400) )
         return this.next(500);
 
+      const record = data.length === 1 ? responseData[0] : responseData;
+
       this.response = {
-        [this.entity.name]: data.length === 1 ? responseData[0] : responseData,
+        [this.entity.name]: Utils.secureEntity(record, this.request.entity),
       }
 
       return this.next(200);
@@ -233,7 +235,7 @@ class EntityHandler {
 
       if (entity !== false) {
         this.response = {
-          [this.entity.name]: entity,
+          [this.entity.name]: Utils.secureEntity(entity, this.request.entity),
         }
       }
 
@@ -251,7 +253,7 @@ class EntityHandler {
       const records = await this.database.getOldest();
 
       this.response = {
-        [this.entity.name]: records,
+        [this.entity.name]: Utils.secureEntity(records, this.request.entity),
       }
 
       // Returning response
@@ -268,7 +270,7 @@ class EntityHandler {
       const records = await this.database.getLatest();
 
       this.response = {
-        [this.entity.name]: records,
+        [this.entity.name]: Utils.secureEntity(records, this.request.entity),
       }
 
       // Returning response

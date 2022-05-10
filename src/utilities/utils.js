@@ -37,15 +37,29 @@ export async function asyncTry(callback) {
 }
 
 export function secureEntity(entityData, { fields }) {
-  if (!entityData || !fields)
-    return entityData;
+  const type = (!entityData || !fields) ? "invalid" : Array.isArray(entityData) ? "array" : "valid";
 
-  const securedKeys = Object.keys(fields).filter(k => fields[k]?.secure === true);
+  switch (type) {
+    case "invalid": {
+      return entityData;
+    }
+    case "array": {
+      const res = [];
 
-  return Object.keys(entityData).reduce((obj, k) => {
-    if ( securedKeys.includes(k) === false )
-      obj[k] = entityData[k];
+      for (const item of entityData)
+        res.push( secureEntity(item, { fields }) );
 
-      return obj;
-  }, {});
+      return res;
+    }
+    default: {
+      const securedKeys = Object.keys(fields).filter(k => fields[k]?.secure === true);
+
+      return Object.keys(entityData).reduce((obj, k) => {
+        if ( securedKeys.includes(k) === false )
+          obj[k] = entityData[k];
+
+          return obj;
+      }, {});
+    }
+  }
 }
