@@ -66,6 +66,53 @@ const server = new Server({
 server.run();
 ```
 
+Or you could also, save this into a JSON file (it must be called ```server.json```), and run the following command to start the server:
+
+```
+npx json-server
+```
+
+The file should look like this:
+
+```json
+{
+  "name": "my-server",
+  "config": {
+    "port": 3500,
+    "type": "rest",
+    "format": "json"
+  },
+  "database": {
+    "type": "custom",
+    "key": "my-db-1",
+    "name": "my-custom-db"
+  },
+  "entities": [
+    {
+      "name": "user",
+      "alias": "User",
+      "fields": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "email": {
+          "type": "string",
+          "required": true
+        },
+        "password": {
+          "type": "string",
+          "required": true
+        },
+        "phone": "string",
+        "birthdate": "date",
+        "avatar": "image"
+      }
+    }
+  ]
+}
+```
+
 ----------------------
 
 # Parameters
@@ -135,15 +182,161 @@ const server = new Server({
 ```
 
 ### Database
-```...```
+
+The project supports 2 databases types: ```MongoDB``` and ```Local File Storage```.
+
+To use MongoDB, you need to install it:
+
+```
+npm install --save mongodb
+```
+
+The basic setup is simple:
+
+| Key            | Description    | Type or Options | Required |
+| :------------- | :------------- | :-------------- | :------- |
+| ```type``` | type of database connection | ```mongo``` or ```custom``` | ```false``` |
+| ```key``` | a database key/identifyer | ```string``` | ```false``` |
+| ```name``` | the database name | ```string``` | ```false``` |
+
+#### Custom Example
+
+```js
+const server = new Server({
+  // ...
+  database: {
+    type: "custom",
+    key: "my-db",
+    name: "database-name",
+  }
+});
+```
+
+#### Mongo Example
+
+```js
+const server = new Server({
+  // ...
+  database: {
+    type: "mongo",
+    key: "my-db",
+    name: "database-name",
+    uri: "mongodb+srv://...",
+  }
+});
+```
+
+#### Multiple Databases Example
+
+```js
+const server = new Server({
+  // ...
+  database: [{
+    type: "custom",
+    key: "my-db-1",
+    name: "my-custom-db"
+  }, {
+    type: "mongo",
+    key: "my-db-2",
+    name: "my-mongo-db",
+    uri: "mongodb+srv://...",
+  }],
+});
+```
 
 ### Entities
-```...```
+
+Entities are like models in a project. If you're creating a blog, this is the place where you should declare the Post, User, Comments, Likes, Tags, and other entities.
+
+| Key            | Description    | Type or Options | Required |
+| :------------- | :------------- | :-------------- | :------- |
+| ```name``` | entity name | ```string``` | ```true``` |
+| ```alias``` | entity alias for visualization purposes | ```string``` | ```true``` |
+| ```fields``` | object with the entity fields | ```object``` | ```true``` |
+| ```auth``` | authentication settings | ```object``` | ```false``` |
+| ```permissions``` | public access settings | ```object``` | ```false``` |
+
+### fields
+
+The configuration is a key/value system, where the value should be the data type of the content, or a object with more settings.
+
+The settings can look like this:
+
+| Key            | Description    | Type or Options | Required |
+| :------------- | :------------- | :-------------- | :------- |
+| ```type``` | type of the content | ```string```, ```number```, ```boolean```, ```object```, ```date```, ```image```, ```file``` | ```true``` |
+| ```required``` | field is a required for entity | ```boolean``` | ```false``` |
+| ```secure``` | field should not be returned with responses | ```boolean``` | ```false``` |
+
+Check the below example:
+
+```js
+const server = new Server({
+  entities: [{
+    name: "user",
+    alias: "User",
+    fields: {
+      name: "string",
+      email: {
+        type: "string",
+        required: true,
+        secure: true
+      }
+    }
+  }]
+});
+```
+
+### auth
+
+The default value is false, so if you set this field in your entity, it means this is should be an authenticated entity.
+
+| Key            | Description    | Type or Options | Required |
+| :------------- | :------------- | :-------------- | :------- |
+| ```fields``` | list of the fields used for authentication | ```array``` | ```true``` |
+| ```type``` | authentication type | ```jwt``` or ```token``` | ```false``` |
+| ```permission``` | settings for access permission | ```object``` | ```false``` |
+
+Check a complete example:
+
+```js
+const server = new Server({
+  entities: [{
+    name: "user",
+    alias: "User",
+    fields: {
+      name: "string",
+      email: "string",
+      password: "string",
+    },
+    auth: {
+      type: "jwt",
+      fields: ["login", "password"],
+      permission: {
+        "*": {
+          insert: false,
+          update: false,
+          delete: false,
+          list: true,
+          get: true,
+        },
+        "post": {
+          insert: true,
+          update: true,
+          delete: false,
+          list: true,
+          get: true,
+        }
+      }
+    }
+  }]
+});
+```
 
 ### Custom Routes
 You can easily add custom routes using the server object returned by the JSONServer Class, in a ExpressJS like manner.
 
-```
+```js
 const server = new Server({ ... });
 
 server.routes.get("/my/endpoint", (req, res) => {
@@ -153,6 +346,7 @@ server.routes.get("/my/endpoint", (req, res) => {
 
 # Roadmap
 
+## Present features:
 * [x] CRUD routes
   * [x] Insert
   * [x] List/Get
@@ -168,14 +362,16 @@ server.routes.get("/my/endpoint", (req, res) => {
 * [x] Interceptor to add custom requests
 * [x] Add logger for request and API transactions
 * [x] Full search for all entities
-* [ ] Finish Documentation
+* [x] Finish Docs
+* [ ] File upload
+* [ ] Create Autogenerated Documentation
 * [ ] Databases
   * [x] In-Memory DB
   * [ ] PostgreSQL
   * [x] MongoDB
   * [ ] MySQL
 
-Future features:
+## Future features:
 * [ ] Blog setup (?)
 * [ ] Chat setup (?)
 * [ ] Ecommerce Setup (?)

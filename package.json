@@ -1,14 +1,18 @@
 {
   "name": "@discovery-solutions/json-server",
-  "version": "1.9.9",
+  "version": "2.0.1",
   "description": "A Node Framework for API Development Based in JSON",
   "author": "Lucas Craveiro Paes",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "bin": {
+    "json-server": "./scripts/bin.js"
+  },
   "output": "dist/",
   "license": "ISC",
   "homepage": "https://github.com/discovery-solutions/json-server#readme",
   "scripts": {
+    "bin": "node scripts/bin.js",
     "dev": "npm run start ./scripts/dev.js",
     "test": "clear && NODE_PATH=./src/ jest --detect-open-handles",
     "start": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules --config nodemon.config.json ",

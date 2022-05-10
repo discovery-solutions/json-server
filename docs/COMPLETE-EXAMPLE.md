@@ -48,19 +48,12 @@ const server = new Server({
         type: "string",
         required: true,
         secure: true,
-      },
-      phone: "string",
-      birthdate: "date",
-      avatar: "image",
-      type: {
-        type: "id",
-        relation: "user-types",
       }
     },
     auth: {
-      type: "jwt", // oauth | token
-      fields: ["login", "password"],    // * required
-      permission: { // default "*"
+      type: "jwt",
+      fields: ["login", "password"],
+      permission: {
         "*": {
           insert: false,
           update: false,
@@ -68,20 +61,32 @@ const server = new Server({
           list: true,
           get: true,
         },
-        "user-types": {
+        "post": {
           insert: true,
           update: true,
-          delete: false,
+          delete: true,
           list: true,
           get: true,
         }
       }
     }
   }, {
-    name: "user-types",
-    alias: "UserTypes",
+    name: "post",
+    alias: "Post",
     fields: {
-      label: "string",
+      title: {
+        type: "string",
+        required: true
+      },
+      subtitle: {
+        type: "string",
+        required: true
+      },
+      content: {
+        type: "string",
+        required: true
+      },
+      tags: "object",
     }
   }]
 });
