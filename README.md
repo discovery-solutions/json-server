@@ -1,7 +1,5 @@
 # JSON Server
 
-[Versão em português 🇧🇷](README-PT.md)
-
 This library allows you to create multiple API servers with minimum amount of code or setup, using a JSON configuration.
 
 The generated API can handle simple CRUD of entities to authentication, and much more. Check the documentation bellow.
@@ -121,16 +119,25 @@ const server = new Server({
 });
 ```
 
-### database
+### Database
 
 ```...```
 
-### entities
+### Entities
 ```...```
+
+### Custom Routes
+You can easily add custom routes using the server object returned by the JSONServer Class, in a ExpressJS like manner.
+
+```
+const server = new Server({ ... });
+
+server.routes.get("/my/endpoint", (req, res) => {
+  res.json({ message: "It's working "})
+})
+```
 
 # Roadmap
-
-Things to do now:
 
 * [x] CRUD routes
   * [x] Insert
@@ -146,8 +153,8 @@ Things to do now:
 * [x] Create tests for features
 * [x] Interceptor to add custom requests
 * [x] Add logger for request and API transactions
-* [ ] Full search for all entities
-* [ ] Translate docs to portuguese
+* [x] Full search for all entities
+* [ ] Finish Documentation
 * [ ] Databases
   * [x] In-Memory DB
   * [ ] PostgreSQL

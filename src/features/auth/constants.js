@@ -3,19 +3,8 @@ export const AUTH = {
     OATH: "oauth",
     JWT: "jwt",
   },
-  REQUESTS: {
-    LOGIN: {
-      PATH: "/system/auth",
-      METHOD: "POST",
-    },
-    REFRESH: {
-      PATH: "/system/refresh",
-      METHOD: "POST",
-    },
-    HOME: {
-      PATH: "/",
-      METHOD: "GET",
-    },
+  ROUTES: {
+    LOGIN: ["POST", "/system/auth"],
   },
   PERMISSIONS: {
     INSERT: "insert",
@@ -33,4 +22,4 @@ export const AUTH = {
   }
 }
 
-export const WHITELIST = Object.values(AUTH.REQUESTS).map(item => item.PATH);
+export const WHITELIST = Object.values(AUTH.ROUTES).map(item => item.PATH);

@@ -17,7 +17,5 @@ requests.use(method, path, { public: false }, async (req, res) => {
 
   const records = await database.search(querySearch);
 
-  res.payload = {
-    records
-  }
+  return res.json({ records });
 });

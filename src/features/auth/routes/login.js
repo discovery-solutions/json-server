@@ -6,10 +6,10 @@ import jwt from "jsonwebtoken";
 import AuthTokenHandler from "../token";
 import { AUTH } from "../constants";
 
-const ROUTES = AUTH.REQUESTS;
+const [ method, path ] = AUTH.ROUTES.LOGIN;
 const requests = new Requests();
 
-requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
+requests.use(method, path, async (req, res) => {
   const database = Databases.get(req.server.database);
   let secret = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
 
@@ -60,11 +60,10 @@ requests.use(ROUTES.LOGIN.METHOD, ROUTES.LOGIN.PATH, async (req, res) => {
     res.setHeader("x-auth-token", authToken);
 
     // Returning entity data
-    res.payload = {
-      [entity.name]: secureEntity(entityData, entity)
-    }
 
-    return true;
+    return res.json({
+      [entity.name]: secureEntity(entityData, entity)
+    });
   } catch (e) {
     logger(e);
     res.statusCode = 500;

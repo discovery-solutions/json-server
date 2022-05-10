@@ -9,6 +9,7 @@ export default class Server {
   constructor(json) {
     this.json = json;
     this.name = json.name;
+    this.routes = new Requests();
 
     global["json-server"].json = json;
     global.logger = json.logger || console.log;
@@ -29,7 +30,6 @@ export default class Server {
     try {
       this.databases = new Databases(this.json);
       this.servers = new ServerTypes(this.json);
-      this.routes = new Requests();
     } catch (e) {
       logger(e);
     }

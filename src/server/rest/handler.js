@@ -25,6 +25,15 @@ export default class Handler {
     this.res = res;
     this.req = req;
 
+    this.res.json = data => {
+      this.res.payload = {
+        ...Error.get(200),
+        ...data,
+      };
+
+      return true;
+    }
+
     this.req.server = {
       database: this.database,
       format: this.format,
