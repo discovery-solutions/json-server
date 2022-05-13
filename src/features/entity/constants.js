@@ -7,4 +7,6 @@ export const METHODS = {
 
   POST: "POST",
   PATCH: "PATCH",
+
+  ALL: "/*",
 }

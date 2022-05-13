@@ -1,3 +1,5 @@
+import { DOCS } from "features/api-docs/constants";
+
 export const AUTH = {
   TYPES: {
     OATH: "oauth",
@@ -22,4 +24,7 @@ export const AUTH = {
   }
 }
 
-export const WHITELIST = Object.values(AUTH.ROUTES).map(item => item.PATH);
+export const WHITELIST = [
+  ...Object.values(AUTH.ROUTES).map(item => item[1]),
+  ...Object.values(DOCS.ROUTES),
+];

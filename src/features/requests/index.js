@@ -1,3 +1,6 @@
+import stringSimilarity from "string-similarity";
+import CONSTANTS from "utilities/constants";
+
 const requests = {};
 
 const defaultOptions = {
@@ -21,18 +24,27 @@ export default class Requests {
 
   static inWhitelist(req) {
     return !!Requests.getRequests().find(item => {
-      return (
-        item.path === req.url.base &&
-        item.method === req.method &&
-        item.options.public !== false
-      )
+      const isExactPath = (item.path === req.url.base && item.method === req.method);
+      const isSubPath = req.url.base.search( item.path.replace("/*", "") ) > -1 &&
+                        item.path.search(CONSTANTS.SERVER.METHODS.ALL) > -1;
+
+      return (isExactPath || isSubPath) && item.options.public !== false;
     });
   }
 
   run = async (req, res) => {
+    const statusLog = [];
+
+    function checkStatusLog() {
+      return statusLog.length > 0 && statusLog.includes(false) === false;
+    }
+
     try {
-      const requestsByMethod = requests[req.method];
-      const statusLog = [];
+      const requestsByMethod = {
+        ...requests[req.method],
+        ...requests[CONSTANTS.SERVER.METHODS.ALL]
+      };
+
       const url = req.url.base === 0 ? "/" : req.url.base;
 
       for (const key in requestsByMethod)
@@ -42,11 +54,21 @@ export default class Requests {
               await Promise.resolve( callback(req, res) ).catch(logger)
             );
 
-      return statusLog.length > 0 && statusLog.includes(false) === false;
+      if (statusLog.length === 0) {
+        const { key } = Object.keys(requestsByMethod).map(key => ({
+          score: stringSimilarity.compareTwoStrings(key, url),
+          key: key,
+        })).sort((a, b) => a.score - b.score).pop();
+
+        for (const { callback } of requestsByMethod[key])
+          statusLog.push( await Promise.resolve( callback(req, res) ).catch(logger) );
+      }
+
+      return checkStatusLog();
     } catch (e) {
       logger(e);
 
-      return false;
+      return checkStatusLog();
     }
   }
 
@@ -71,7 +93,15 @@ export default class Requests {
   }
 
   // Alias registering callbacks
-  use = (...args) => this.register(...args);
+  use = (...args) => {
+    const [ method ] = args;
+    const isValidMethod = Object.values(CONSTANTS.SERVER.METHODS).includes(method);
+
+    if (isValidMethod === false)
+      args = [CONSTANTS.SERVER.METHODS.ALL, ...args];
+
+    this.register(...args);
+  }
 
   get = (...args) => {
     return this.register(CONSTANTS.SERVER.METHODS.GET, ...args);

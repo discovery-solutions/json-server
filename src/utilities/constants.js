@@ -1,12 +1,14 @@
 import { METHODS } from "features/entity/constants";
 import { Events } from "utilities/event-listener";
 import { AUTH } from "features/auth/constants";
+import { DOCS } from "features/api-docs/constants";
 
-global.CONSTANTS = {
+const CONSTANTS = {
   SERVER: {
     METHODS: METHODS,
     EVENTS: Events,
     AUTH: AUTH,
+    DOCS: DOCS,
     SECRET: "DEFAUL-SECRET-JSON-SERVER",
     TYPES: {
       REST: "rest",
@@ -30,3 +32,7 @@ global.CONSTANTS = {
     }
   }
 };
+
+export default CONSTANTS;
+
+global.CONSTANTS = CONSTANTS;

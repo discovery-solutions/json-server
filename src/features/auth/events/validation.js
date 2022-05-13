@@ -38,12 +38,12 @@ eventListener.set(async (req, res) => {
 
   req.entity = entities.find(e => e.name === req.url.splitted[0]) || false;
 
+  if (Requests.inWhitelist(req))
+    return false;
+
   const authToken = req.headers["x-auth-token"];
 
   if (typeof authToken === "undefined")
-    return true;
-
-  if (Requests.inWhitelist(req))
     return true;
 
   const authTokenHandler = new AuthTokenHandler(req);

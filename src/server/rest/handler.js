@@ -41,12 +41,7 @@ export default class Handler {
       port: this.port,
     }
 
-    logger(req.method + " " + req.url);
-
-    // Handle file requests
-    const isFileRequest = req.url.split(".").length > 1;
-
-    if ( isFileRequest ) return this.handleNotFound();
+    logger("REQUEST", req.method, req.url, req.body || "");
 
     // Calling events for before actions
     const middlewares = [
@@ -63,12 +58,8 @@ export default class Handler {
         typeof this.res.payload === "object"
       );
 
-      if (isChanged) {
-        return this.parse(this.res.statusCode, {
-          ...Error.get(this.res.statusCode),
-          ...this.res.payload,
-        });
-      }
+      if (isChanged)
+        return this.parse(this.res.statusCode, this.res.payload);
     }
 
     // Handling request with entities
@@ -86,12 +77,20 @@ export default class Handler {
 
   parse(code, response = {}) {
     this.code = code;
-    this.response = {
-      ...Error.get(code),
-      ...response,
-    };
 
-    switch (this.format) {
+    const hasPreSettedHeader = !!this.res.getHeader("Content-Type");
+    const format = hasPreSettedHeader ? undefined : this.format;
+
+    if (format) {
+      this.response = {
+        ...Error.get(code),
+        ...response,
+      };
+    } else if (Object.keys(response).length > 0) {
+      this.response = response;
+    }
+
+    switch (format) {
       case CONSTANTS.SERVER.FORMATS.CSV: {
         this.res.setHeader("Content-Type", "text/csv");
         this.res.setHeader("Content-Disposition", "attachment;filename=response.csv");
@@ -99,11 +98,13 @@ export default class Handler {
         this.response = toCSV(response);
         break;
       }
-      case CONSTANTS.SERVER.FORMATS.JSON:
-      default: {
+      case CONSTANTS.SERVER.FORMATS.JSON: {
         this.res.setHeader("Content-Type", "application/json");
 
         this.response = toJSON(this.response);
+        break;
+      }
+      default: {
         break;
       }
     }
@@ -116,7 +117,13 @@ export default class Handler {
   }
 
   send() {
-    this.res.writeHead(this.code);
-    this.res.end(this.response);
+    logger("RESPONSE", this.req.method, this.code, this.req.url.base, this.response || "");
+
+    this.res.writeHead(this.code, this.res.getHeaders());
+
+    if (this.response)
+      return this.res.end(this.response);
+
+    return this.res.end();
   }
 }

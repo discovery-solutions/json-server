@@ -2,6 +2,7 @@ import * as Utils from "utilities/utils";
 import Rest from "./rest/";
 
 import "features/auth";
+import "features/api-docs";
 import "features/requests/routes";
 
 export default class ServerTypes {

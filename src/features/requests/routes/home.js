@@ -5,7 +5,8 @@ const requests = new Requests();
 
 const callback = async (req, res) => {
   return res.json({
-    message: "API Running"
+    message: "API Running",
+    documentation: CONSTANTS.SERVER.DOCS.ROUTES.DOCS.replace("*", "")
   });
 }
 
