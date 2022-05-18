@@ -3,6 +3,7 @@ import Requests from "features/requests";
 import Entity from "features/entity";
 import Error from "utilities/error";
 import { toJSON, toCSV, getBody } from "./utils";
+import "./cors";
 
 export default class Handler {
   constructor({ format, port, type, database }) {
@@ -41,7 +42,7 @@ export default class Handler {
       port: this.port,
     }
 
-    logger("REQUEST", req.method, req.url, req.body || "");
+    logger("REQUEST", req.method, req.url, (req.body && Object.keys(req.body).length > 0) || "");
 
     // Calling events for before actions
     const middlewares = [
@@ -78,8 +79,8 @@ export default class Handler {
   parse(code, response = {}) {
     this.code = code;
 
-    const hasPreSettedHeader = !!this.res.getHeader("Content-Type");
-    const format = hasPreSettedHeader ? undefined : this.format;
+    const hasPreSettedContentType = !!this.res.getHeader("Content-Type");
+    const format = hasPreSettedContentType ? undefined : this.format;
 
     if (format) {
       this.response = {
@@ -117,7 +118,11 @@ export default class Handler {
   }
 
   send() {
-    logger("RESPONSE", this.req.method, this.code, this.req.url.base, this.response || "");
+    logger("RESPONSE", this.req.method, this.code, this.req.url.base, (() => {
+      return this.res.getHeader("Content-Type")?.search("json") > -1
+              ? this.response
+              : "";
+    })());
 
     this.res.writeHead(this.code, this.res.getHeaders());
 

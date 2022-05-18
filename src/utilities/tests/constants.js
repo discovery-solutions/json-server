@@ -61,6 +61,8 @@ export const USER = {
 
 export const JSON_EXAMPLE = {
   name: "test-server",
+  label: "Test Server Project",
+  cors: true,
   config: {
     port: PORT,
     type: "rest",

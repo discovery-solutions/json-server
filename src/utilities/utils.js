@@ -63,3 +63,7 @@ export function secureEntity(entityData, { fields }) {
     }
   }
 }
+
+export function createURL(req, base = "") {
+  return `http${req.socket.encrypted ? "s" : ""}://${req.headers.host + base}/`
+}

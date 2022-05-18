@@ -253,7 +253,7 @@ class EntityHandler {
       const records = await this.database.getOldest();
 
       this.response = {
-        [this.entity.name]: Utils.secureEntity(records, this.request.entity),
+        records: Utils.secureEntity(records, this.request.entity),
       }
 
       // Returning response
@@ -270,7 +270,7 @@ class EntityHandler {
       const records = await this.database.getLatest();
 
       this.response = {
-        [this.entity.name]: Utils.secureEntity(records, this.request.entity),
+        records: Utils.secureEntity(records, this.request.entity),
       }
 
       // Returning response
