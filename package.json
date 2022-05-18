@@ -1,6 +1,6 @@
 {
   "name": "@discovery-solutions/json-server",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "A Node Framework for API Development Based in JSON",
   "author": "Lucas Craveiro Paes",
   "main": "dist/index.cjs.js",
@@ -18,7 +18,7 @@
     "start": "NODE_PATH=./src/ nodemon --exec babel-node --experimental-vm-modules --config nodemon.config.json ",
     "test:server": "npm run start ./scripts/test.js",
     "test:watch": "NODE_PATH=./src/ jest --watch --detect-open-handles",
-    "build": "rollup -c"
+    "build": "rm -R dist & rollup -c && cp -R ./src/features/api-docs/files ./dist/files/"
   },
   "jest": {
     "modulePathIgnorePatterns": [
