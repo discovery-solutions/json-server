@@ -26,7 +26,8 @@ export default class Requests {
     return !!Requests.getRequests().find(item => {
       const isExactPath = (item.path === req.url.base && item.method === req.method);
       const isSubPath = req.url.base.search( item.path.replace("/*", "") ) > -1 &&
-                        item.path.search(CONSTANTS.SERVER.METHODS.ALL) > -1;
+                        item.path.search(CONSTANTS.SERVER.METHODS.ALL) > -1 &&
+                        item.path !== "/";
 
       return (isExactPath || isSubPath) && item.options.public !== false;
     });
@@ -45,7 +46,7 @@ export default class Requests {
         ...requests[CONSTANTS.SERVER.METHODS.ALL]
       };
 
-      const url = req.url.base === 0 ? "/" : req.url.base;
+      const url = req.url.base.length === 0 ? "/" : req.url.base;
 
       for (const key in requestsByMethod)
         if ( url === key )
@@ -55,13 +56,14 @@ export default class Requests {
             );
 
       if (statusLog.length === 0) {
-        const { key } = Object.keys(requestsByMethod).map(key => ({
+        const { key, score } = Object.keys(requestsByMethod).map(key => ({
           score: stringSimilarity.compareTwoStrings(key, url),
           key: key,
         })).sort((a, b) => a.score - b.score).pop();
 
-        for (const { callback } of requestsByMethod[key])
-          statusLog.push( await Promise.resolve( callback(req, res) ).catch(logger) );
+        if (score > 0.7)
+          for (const { callback } of requestsByMethod[key])
+            statusLog.push( await Promise.resolve( callback(req, res) ).catch(logger) );
       }
 
       return checkStatusLog();

@@ -6,7 +6,7 @@ import URL from "features/entity/url";
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
 
 // Access controller for routes
-eventListener.set(async (req, res) => {
+eventListener.set(async function authentication(req, res) {
   const { PERMISSIONS, REQUESTS, PERMISSIONS_BY_METHODS } = CONSTANTS.SERVER.AUTH;
 
   const permissionByURL = {
@@ -31,7 +31,7 @@ eventListener.set(async (req, res) => {
   const validPermissions = Object.keys(req?.entity?.permission || {})?.filter(key => req.entity?.permission[key] === true);
   const isPublicRequest = !!validPermissions?.find(key => PERMISSIONS_BY_METHODS[req.method].includes(key));
 
-  if (isPublicRequest)
+  if (isPublicRequest || Requests.inWhitelist(req))
     return false;
 
   for (const key of Object.keys(URL)) {
@@ -51,18 +51,5 @@ eventListener.set(async (req, res) => {
     }
   }
 
-  for (const { path, method, options } of Requests.getRequests()) {
-    if (path === req.url.base && method === req.method) {
-      // If route is public, then allow access
-      if (options.public === true)
-        return false;
-
-      // If route is private and there's some entity authenticated, then allow access
-      if (options.public === false && !!req.auth)
-        return false
-    }
-  }
-
-  res.statusCode = 401;
-  return true;
+  return res.code(401);
 });

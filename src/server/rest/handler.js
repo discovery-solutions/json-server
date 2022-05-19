@@ -35,6 +35,11 @@ export default class Handler {
       return true;
     }
 
+    this.res.code = statusCode => {
+      this.res.statusCode = statusCode;
+      return true;
+    }
+
     this.req.server = {
       database: this.database,
       format: this.format,
@@ -54,7 +59,6 @@ export default class Handler {
       const status = await middleware.run(this.req, this.res);
 
       const isChanged = (
-        status !== false ||
         this.res.statusCode !== 200 ||
         typeof this.res.payload === "object"
       );
@@ -77,8 +81,6 @@ export default class Handler {
   }
 
   parse(code, response = {}) {
-    this.code = code;
-
     const hasPreSettedContentType = !!this.res.getHeader("Content-Type");
     const format = hasPreSettedContentType ? undefined : this.format;
 
@@ -118,13 +120,13 @@ export default class Handler {
   }
 
   send() {
-    logger("RESPONSE", this.req.method, this.code, this.req.url.base, (() => {
+    logger("RESPONSE", this.req.method, this.res.statusCode, this.req.url.base, (() => {
       return this.res.getHeader("Content-Type")?.search("json") > -1
               ? this.response
               : "";
     })());
 
-    this.res.writeHead(this.code, this.res.getHeaders());
+    this.res.writeHead(this.res.statusCode, this.res.getHeaders());
 
     if (this.response)
       return this.res.end(this.response);

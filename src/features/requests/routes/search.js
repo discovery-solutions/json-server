@@ -7,7 +7,7 @@ const requests = new Requests();
 
 requests.use(method, path, { public: false }, async (req, res) => {
   if (Object.keys(req.url.params).length === 0)
-    return res.error(422);
+    return res.status(422);
 
   const { query, search, s, q } = req.url.params;
   const querySearch = query || search || s || q;

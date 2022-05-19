@@ -6,7 +6,6 @@ import { DOCS, MIME_TYPES } from "./constants";
 
 const requests = new Requests();
 const defaultFile = "index.html";
-// https://github.com/floriannicolas/API-Documentation-HTML-Template
 
 requests.use(DOCS.ROUTES.DOCS, async (req, res) => {
   const ext = path.parse(req.url.base)?.ext;
@@ -16,10 +15,8 @@ requests.use(DOCS.ROUTES.DOCS, async (req, res) => {
   if (req.url.base.slice(-1) !== "/" && !ext) {
     const redirectURL = Utils.createURL(req, req.url.base)
 
-    res.statusCode = 302;
     res.setHeader("Location", redirectURL);
-
-    return true;
+    return res.code(301);
   }
 
   const sanitized = path.normalize(req.url.base).replace("/system/docs", "");

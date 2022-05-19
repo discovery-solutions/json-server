@@ -7,21 +7,11 @@ import Requests from "features/requests";
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
 
 // Identify user from token
-eventListener.set(async (req, res) => {
+eventListener.set(async function validation(req, res) {
   const { entities } = getJSON();
 
   const splitted = req.url.split("/");
   const [ base = "", params = "" ] = req.url.split("?");
-
-  res.send = data => {
-    req.paload = data;
-    return true;
-  }
-
-  res.error = code => {
-    req.statusCode = code;
-    return true;
-  }
 
   req.url = {
     value: req.url,
@@ -41,10 +31,10 @@ eventListener.set(async (req, res) => {
   if (Requests.inWhitelist(req))
     return false;
 
-  const authToken = req.headers["x-auth-token"];
+  const authToken = req.headers["x-auth-token"] || req.headers["authorization"];
 
   if (typeof authToken === "undefined")
-    return true;
+    return res.code(401);
 
   const authTokenHandler = new AuthTokenHandler(req);
   const [ auth, type ] = await authTokenHandler.validate(authToken);

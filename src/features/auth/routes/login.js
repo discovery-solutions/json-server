@@ -39,7 +39,7 @@ requests.use(method, path, async (req, res) => {
 
     // Could not identify credentials
     if (!entityData || !entity)
-      return (res.statusCode = 401);
+      return res.code(401);
 
     if (entity?.auth?.secret)
       secret = entity.auth.secret;
@@ -66,7 +66,7 @@ requests.use(method, path, async (req, res) => {
     });
   } catch (e) {
     logger(e);
-    res.statusCode = 500;
+    return res.code(500);
   }
 
   return false;

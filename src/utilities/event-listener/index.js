@@ -26,10 +26,7 @@ export default class EventListener {
 
     for (const event of events) {
       try {
-        const status = await Promise.resolve( event(...args) );
-
-        if (status === false)
-          return false;
+        await Promise.resolve( event(...args) );
       } catch (e) {
         logger(e);
         return false;

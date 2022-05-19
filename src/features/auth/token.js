@@ -10,17 +10,24 @@ export default class AuthTokenHandler {
     DB = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
 
     this.server = server;
-    this.database = Databases.get(server?.database || DB);
-    this.database.setEntity(DEFAULT_ENTITY);
+
+    try {
+      this.database = Databases.get(server?.database || DB);
+      this.database.setEntity(DEFAULT_ENTITY);
+    } catch (e) {
+      logger(e);
+    }
   }
 
-  async validate(token) {
+  async validate(originalToken) {
     try {
+      const token = originalToken?.toLowerCase().search("bearer") > -1 ? originalToken.replace( new RegExp("bearer ", "gi"), "" ) : originalToken;
+
       await this.database.setEntity(DEFAULT_ENTITY);
 
       const auth = await this.database.find({ token });
 
-      if (!auth.entity)
+      if (!auth?.entity)
         return [false, false];
 
       const entityDB = Databases.get(this.server?.database || DB);
