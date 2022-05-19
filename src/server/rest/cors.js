@@ -12,6 +12,6 @@ eventListener.set(async (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, X-Auth-Token, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 
     if (req.method === "OPTIONS")
-      res.statusCode = 201;
+      res.code(200).json({ message: "OK" });
   }
 });

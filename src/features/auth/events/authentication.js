@@ -51,5 +51,7 @@ eventListener.set(async function authentication(req, res) {
     }
   }
 
+  console.log("banana");
+
   return res.code(401);
 });

@@ -31,13 +31,12 @@ export default class Handler {
         ...Error.get(200),
         ...data,
       };
-
-      return true;
+      return this.res;
     }
 
     this.res.code = statusCode => {
       this.res.statusCode = statusCode;
-      return true;
+      return this.res;
     }
 
     this.req.server = {
@@ -63,6 +62,8 @@ export default class Handler {
         typeof this.res.payload === "object"
       );
 
+      console.log(this.res.statusCode);
+
       if (isChanged)
         return this.parse(this.res.statusCode, this.res.payload);
     }
@@ -83,6 +84,8 @@ export default class Handler {
   parse(code, response = {}) {
     const hasPreSettedContentType = !!this.res.getHeader("Content-Type");
     const format = hasPreSettedContentType ? undefined : this.format;
+
+    console.log(code, response);
 
     if (format) {
       this.response = {
