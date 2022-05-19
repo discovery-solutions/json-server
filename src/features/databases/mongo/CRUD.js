@@ -21,16 +21,16 @@ export default class CRUD {
   }
 
   async find(data) {
-    const records = await this.collection.findOne(data);
-
-    return records;
+    try {
+      return await this.collection.findOne(data);
+    } catch (e) {
+      return false;
+    }
   }
 
   async findByID(id) {
     try {
-      const res = await this.find({ _id: ObjectId(id) });
-
-      return res;
+      return await this.find({ _id: ObjectId(id) });
     } catch (e) {
       return false;
     }
