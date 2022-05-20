@@ -1,4 +1,4 @@
-import { DOCS } from "features/api-docs/constants";
+import { DOCS } from "features/docs/constants";
 
 export const AUTH = {
   TYPES: {

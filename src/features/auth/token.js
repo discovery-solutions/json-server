@@ -1,5 +1,7 @@
+import { Entities } from "utilities/constants";
 import Databases from "features/databases";
 import * as Utils from "utilities/utils";
+import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
 let DEFAULT_ENTITY, DB;
@@ -30,23 +32,40 @@ export default class AuthTokenHandler {
       if (!auth?.entity)
         return [false, false];
 
-      const entityDB = Databases.get(this.server?.database || DB);
-      await entityDB.setEntity(auth.entity.type);
+      if (this.isValidTokenTimeout(auth) === false)
+        return [ "expired", false ]
 
-      const entity = await entityDB.findByID(auth.entity.id);
+      switch (auth.entity.type) {
+        // ADMIN CASE
+        case Entities.ADMIN.name: {
+          const { data } = jwt.verify(auth.token, Entities.ADMIN.auth.secret);
 
-      await this.database.setEntity(DEFAULT_ENTITY);
+          return [
+            Utils.secureEntity(data, Entities.ADMIN),
+            Entities.ADMIN.name,
+          ];
+        }
+        // DEFAULT CASE
+        default: {
+          const entityDB = Databases.get(this.server?.database || DB);
+          await entityDB.setEntity(auth.entity.type);
 
-      const entityModel = Utils.getJSON().entities.find(e => e.name === auth.entity.type);
+          const entity = await entityDB.findByID(auth.entity.id);
 
-      return [
-        Utils.secureEntity(entity, entityModel),
-        auth.entity.type,
-      ];
+          await this.database.setEntity(DEFAULT_ENTITY);
+
+          const entityModel = Utils.getJSON().entities.find(e => e.name === auth.entity.type);
+
+          return [
+            Utils.secureEntity(entity, entityModel),
+            auth.entity.type,
+          ];
+        }
+      }
     } catch (e) {
       logger(e);
 
-      return false;
+      return [false, false];
     }
   }
 
@@ -65,6 +84,16 @@ export default class AuthTokenHandler {
 
       return false;
     }
+  }
+
+  isValidTokenTimeout(auth) {
+    const diff = Math.abs(new Date() - auth.created);
+    const hours = diff / (1000 * 60 * 60);
+
+    if (hours < 48)
+      return true;
+
+    return false;
   }
 
   generate() {

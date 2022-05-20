@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import * as Utils from "utilities/utils";
+import { Entities } from "utilities/constants";
 import Requests from "features/requests";
 import { DOCS, MIME_TYPES } from "./constants";
 
@@ -64,7 +65,7 @@ requests.use(DOCS.ROUTES.API, async (req, res) => {
       alias: entity.alias || false,
       fields: entity.fields
     }
-  });
+  }).filter(item => item.name !== Entities.ADMIN.name);
 
   res.json({
     docs: {

@@ -23,7 +23,7 @@ export default class Requests {
   }
 
   static inWhitelist(req) {
-    return !!Requests.getRequests().find(item => {
+    const customRequestWhitelist = !!Requests.getRequests().find(item => {
       const isExactPath = (item.path === req.url.base && item.method === req.method);
       const isSubPath = req.url.base.search( item.path.replace("/*", "") ) > -1 &&
                         item.path.search(CONSTANTS.SERVER.METHODS.ALL) > -1 &&
@@ -31,6 +31,11 @@ export default class Requests {
 
       return (isExactPath || isSubPath) && item.options.public !== false;
     });
+
+    const validPermissions = Object.keys(req?.entity?.permission || {})?.filter(key => req.entity?.permission[key] === true);
+    const isPublicRequest = !!validPermissions?.find(key => CONSTANTS.SERVER.AUTH.PERMISSIONS_BY_METHODS[req.method].includes(key));
+
+    return customRequestWhitelist || isPublicRequest;
   }
 
   run = async (req, res) => {
@@ -61,7 +66,7 @@ export default class Requests {
           key: key,
         })).sort((a, b) => a.score - b.score).pop();
 
-        if (score > 0.7)
+        if (score > 0.3)
           for (const { callback } of requestsByMethod[key])
             statusLog.push( await Promise.resolve( callback(req, res) ).catch(logger) );
       }

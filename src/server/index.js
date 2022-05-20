@@ -1,5 +1,5 @@
 import "features/auth";
-import "features/api-docs";
+import "features/docs";
 import "features/requests/routes";
 
 import * as Utils from "utilities/utils";

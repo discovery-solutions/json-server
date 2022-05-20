@@ -1,7 +1,23 @@
+import { Entities } from "utilities/constants";
 import ip from "ip";
 
 export function getJSON() {
   return global["json-server"] || {};
+}
+
+export function setJSON(json) {
+  global["json-server"] = json;
+}
+
+export function injectJSON(json) {
+  if (typeof json.dashboard === "object")
+    json.entities.push(Entities.ADMIN);
+
+  return json;
+}
+
+export function isFile(filename) {
+  return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) : [];
 }
 
 export function getArray(data) {

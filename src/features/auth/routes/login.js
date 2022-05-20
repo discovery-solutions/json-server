@@ -11,7 +11,7 @@ const requests = new Requests();
 
 requests.use(method, path, async (req, res) => {
   const database = Databases.get(req.server.database);
-  let secret = CONSTANTS.SERVER.SETTINGS.DATABASE.DEFAULT;
+  let secret = CONSTANTS.SERVER.SECRET;
 
   try {
     let entityData = null;

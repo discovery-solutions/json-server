@@ -10,6 +10,4 @@ server.setup({
   }
 });
 
-// server.getServerByPort(3501)
-
 server.run();

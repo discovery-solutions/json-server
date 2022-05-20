@@ -1,15 +1,18 @@
 import Requests from "features/requests";
 import Databases from "features/databases";
+import * as Utils from "utilities/utils";
 import ServerTypes from "server";
 import "utilities/constants";
 
 export default class Server {
   constructor(json) {
+    Utils.injectJSON(json);
+
     this.json = json;
     this.name = json.name;
     this.routes = new Requests();
 
-    global["json-server"] = json;
+    Utils.setJSON(json);
     global.logger = json.logger || console.log;
   }
 

@@ -39,6 +39,9 @@ eventListener.set(async function validation(req, res) {
   const authTokenHandler = new AuthTokenHandler(req);
   const [ auth, type ] = await authTokenHandler.validate(authToken);
 
+  if (auth === "expired")
+    return res.code(401).json({ message: "Authentication expired", expired: true });
+
   req.auth = auth;
   req.entity = entities.find(e => e.name === type) || false;
 });

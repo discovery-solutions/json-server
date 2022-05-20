@@ -33,7 +33,11 @@ export function getBody(request) {
     });
 
     request.on("end", () => {
-      return resolve( JSON.parse(data) );
+      try {
+        return resolve( JSON.parse(data) );
+      } catch (e) {
+        return reject(e);
+      }
     });
 
     request.on("error", e => {

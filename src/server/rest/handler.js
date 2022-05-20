@@ -16,21 +16,13 @@ export default class Handler {
   }
 
   handler = async (req, res) => {
-    // Extraction body
-    try {
-      req.body = await getBody(req);
-    } catch (e) {
-      return this.parse(422);
-    }
+    logger("REQUEST", req.method, req.url, (req.body && Object.keys(req.body).length > 0) || "");
 
     this.res = res;
     this.req = req;
 
     this.res.json = data => {
-      this.res.payload = {
-        ...Error.get(200),
-        ...data,
-      };
+      this.res.payload = data;
       return this.res;
     }
 
@@ -46,7 +38,12 @@ export default class Handler {
       port: this.port,
     }
 
-    logger("REQUEST", req.method, req.url, (req.body && Object.keys(req.body).length > 0) || "");
+    // Extracting body
+    try {
+      req.body = await getBody(req);
+    } catch (e) {
+      return this.parse(422);
+    }
 
     // Calling events for before actions
     const middlewares = [
@@ -119,7 +116,7 @@ export default class Handler {
   }
 
   send() {
-    logger("RESPONSE", this.req.method, this.res.statusCode, this.req.url.base, (() => {
+    logger("RESPONSE", this.req.method, this.res.statusCode, this.req.url.base || this.req.url, (() => {
       return this.res.getHeader("Content-Type")?.search("json") > -1
               ? this.response
               : "";

@@ -59,6 +59,25 @@ export const USER = {
   }
 }
 
+export const DASHBOARD = {
+  label: "Test Dashboard",
+  palette: {
+    primary: "#9e27d9",
+    secondary: "#27d9af",
+    background: "#FFFFFF",
+
+    success: "#12e640",
+    danger: "#e62712",
+    alert: "#f59207",
+    info: "#07a2f5",
+  },
+  access: [{
+    name: "Lucas Craveiro",
+    login: "lucascraveiropaes@gmail.com",
+    password: "lucas123",
+  }]
+}
+
 export const JSON_EXAMPLE = {
   name: "test-server",
   label: "Test Server Project",
@@ -75,5 +94,6 @@ export const JSON_EXAMPLE = {
     key: DB,
     name: DB,
   },
-  entities: [USER, POST]
+  entities: [USER, POST],
+  dashboard: DASHBOARD,
 };
