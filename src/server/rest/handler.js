@@ -3,7 +3,9 @@ import Requests from "features/requests";
 import Entity from "features/entity";
 import Error from "utilities/error";
 import { toJSON, toCSV, getBody } from "./utils";
+import "./config";
 import "./cors";
+import "./file";
 
 export default class Handler {
   constructor({ format, port, type, database }) {
@@ -21,28 +23,12 @@ export default class Handler {
     this.res = res;
     this.req = req;
 
-    this.res.json = data => {
-      this.res.payload = data;
-      return this.res;
-    }
-
-    this.res.code = statusCode => {
-      this.res.statusCode = statusCode;
-      return this.res;
-    }
-
+    // Setting server variable
     this.req.server = {
       database: this.database,
       format: this.format,
       type: this.type,
       port: this.port,
-    }
-
-    // Extracting body
-    try {
-      req.body = await getBody(req);
-    } catch (e) {
-      return this.parse(422);
     }
 
     // Calling events for before actions
@@ -79,6 +65,8 @@ export default class Handler {
   parse(code, response = {}) {
     const hasPreSettedContentType = !!this.res.getHeader("Content-Type");
     const format = hasPreSettedContentType ? undefined : this.format;
+
+    this.res.statusCode = code;
 
     if (format) {
       this.response = {

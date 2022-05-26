@@ -1,4 +1,7 @@
 import { Entities } from "utilities/constants";
+import path from "path";
+import os from "os";
+import fs from "fs";
 import ip from "ip";
 
 export function getJSON() {
@@ -48,7 +51,7 @@ export async function asyncTry(callback) {
   try {
     return await Promise.resolve(callback());
   } catch (e) {
-    // console.log(e);
+    // logger(e);
   }
 }
 
@@ -82,4 +85,21 @@ export function secureEntity(entityData, { fields }) {
 
 export function createURL(req, base = "") {
   return `http${req.socket.encrypted ? "s" : ""}://${req.headers.host + base}/`
+}
+
+export async function saveFile(file, name, directory) {
+  const extension = file.filename.split(".")[1];
+  const fileName = [name, extension].join(".");
+  const filePath = path.join( directory, fileName );
+
+  if (!fs.existsSync(directory))
+    fs.mkdirSync(directory, { recursive: true });
+
+  try {
+    file.move(filePath);
+    return filePath;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }

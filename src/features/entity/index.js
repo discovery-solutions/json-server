@@ -1,6 +1,6 @@
 import * as Utils from "utilities/utils";
 import Databases from "features/databases";
-import { validateByEntityModel, getID } from "./utils";
+import { validateByEntityModel, getID, saveFiles } from "./utils";
 import URL from "./URL";
 
 class EntityHandler {
@@ -203,16 +203,21 @@ class EntityHandler {
       const body = this.request.body;
 
       // Validating ID
-      if (this.database.validateID(entityID) === false)
+      if (await this.database.validateID(entityID) === false)
         return this.next(400);
 
       // Cleaning object to allow only keys from entity fields
       const validKeys = Object.keys(this.entity.fields);
-      const data = {};
+      let data = {};
 
       for (const key of validKeys)
         if (body[key])
           data[key] = body[key];
+
+      data = {
+        ...data,
+        ...await saveFiles(this.request, entityID),
+      }
 
       // If the object is empty, return 400
       if ( Object.keys(data).length < 1 )

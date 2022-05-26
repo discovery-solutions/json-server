@@ -24,8 +24,10 @@ export function getBody(request) {
 
   return new Promise((resolve, reject) => {
     let data = "";
+    const isValidMethod = methodsUsingBody.includes(request.method);
+    const isValidPayload = request.headers["content-type"]?.search("json") > -1;
 
-    if ( methodsUsingBody.includes(request.method) === false )
+    if ( isValidMethod === false || isValidPayload === false )
       return resolve({});
 
     request.on("data", chunk => {

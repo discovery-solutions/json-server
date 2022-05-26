@@ -4,7 +4,7 @@ import { getJSON } from "utilities/utils";
 const eventListener = new EventListener(Events.REQUEST.BEFORE.PROCESS);
 
 // Access controller for routes
-eventListener.set(async (req, res) => {
+eventListener.set(async function cors(req, res) {
   if (getJSON().cors) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST, GET, PATCH, DELETE");

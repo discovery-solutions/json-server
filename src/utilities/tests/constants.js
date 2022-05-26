@@ -56,6 +56,7 @@ export const USER = {
       required: true,
       secure: true,
     },
+    avatar: "file"
   }
 }
 
@@ -88,9 +89,9 @@ export const JSON_EXAMPLE = {
     format: "json"
   },
   database: {
-    // type: "custom",
-    type: "mongo",
-    uri: "mongodb+srv://dbAdmin:dbPassword@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority",
+    type: "custom",
+    // type: "mongo",
+    // uri: "mongodb+srv://dbAdmin:dbPassword@cluster0.dr81f.gcp.mongodb.net/test?retryWrites=true&w=majority",
     key: DB,
     name: DB,
   },

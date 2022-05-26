@@ -13,6 +13,7 @@ export const MIME_TYPES = {
   ".css": "text/css",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
   ".wav": "audio/wav",
   ".mp3": "audio/mpeg",
   ".svg": "image/svg+xml",

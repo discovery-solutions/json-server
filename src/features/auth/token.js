@@ -87,7 +87,8 @@ export default class AuthTokenHandler {
   }
 
   isValidTokenTimeout(auth) {
-    const diff = Math.abs(new Date() - auth.created);
+    const date = auth.created instanceof Date ? auth.created : new Date(auth.created);
+    const diff = Math.abs(new Date() - date);
     const hours = diff / (1000 * 60 * 60);
 
     if (hours < 48)

@@ -10,23 +10,23 @@ export default class EventListener {
     return this;
   }
 
-  set(callback) {
-    return EventListener.setListener(this.event, callback);
+  set(...args) {
+    return EventListener.setListener(this.event, ...args);
   }
 
-  remove(index) {
-    return EventListener.removeListener(this.event, index);
+  remove(...args) {
+    return EventListener.removeListener(this.event, ...args);
   }
 
   run = async (...args) => {
-    const events = listeners[this.event];
+    const events = listeners[this.event].sort(item => item.options.priority ? -1 : 1);
 
     if ( Array.isArray(events) === false )
       return false;
 
-    for (const event of events) {
+    for (const { callback } of events) {
       try {
-        await Promise.resolve( event(...args) );
+        await Promise.resolve( callback(...args) );
       } catch (e) {
         logger(e);
         return false;
@@ -36,8 +36,16 @@ export default class EventListener {
     return true;
   }
 
-  static setListener(event, callback) {
-    const index = listeners[event].push(callback);
+  static setListener(event, ...args) {
+    let options = args[0];
+    let callback = args[1];
+
+    if (args[1] === undefined) {
+      callback = args[0];
+      options = { priority: false };
+    }
+
+    const index = listeners[event].push({ options, callback});
 
     return index - 1;
   }
