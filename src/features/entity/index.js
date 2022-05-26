@@ -113,7 +113,7 @@ class EntityHandler {
       // Searching for records
       const entity = await this.database.findByID(entityID);
 
-      if (entity === false)
+      if (!!entity)
         return this.next(204);
 
       // Returning response

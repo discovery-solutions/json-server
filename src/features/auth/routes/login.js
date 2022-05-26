@@ -13,6 +13,9 @@ requests.use(method, path, async (req, res) => {
   const database = Databases.get(req.server.database);
   let secret = CONSTANTS.SERVER.SECRET;
 
+  if ( !req.body || Object.keys(req.body).length === 0 )
+    return res.code(400);
+
   try {
     let entityData = null;
     let entity = null;
@@ -60,9 +63,9 @@ requests.use(method, path, async (req, res) => {
     res.setHeader("x-auth-token", authToken);
 
     // Returning entity data
-
     return res.json({
-      [entity.name]: secureEntity(entityData, entity)
+      entity: entity.name,
+      [entity.name]: secureEntity(entityData, entity),
     });
   } catch (e) {
     logger(e);

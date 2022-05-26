@@ -41,6 +41,12 @@ describe("Entity Routes Without Authentication", () => {
     id = useID(post);
   });
 
+  test("GET /post/{id}", async () => {
+    const res = await axios.get("/post/"+ id);
+
+    validateResponse(res, "success");
+  });
+
   test("POST /post", async () => {
     const res = await axios.post("/post", post);
 
@@ -54,12 +60,6 @@ describe("Entity Routes Without Authentication", () => {
     });
 
     validateResponse(res, "error");
-  });
-
-  test("GET /post/{id}", async () => {
-    const res = await axios.get("/post/"+ id);
-
-    validateResponse(res, "success");
   });
 
   test("GET /post", async () => {
